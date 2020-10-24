@@ -1,0 +1,28 @@
+{
+  "name": "covid19",
+  "version": "0.0.1",
+  "description": "experimental",
+  "main": "dist/index.html",
+  "scripts": {
+    "build": "parcel build src/index.html",
+    "dev": "parcel src/index.html"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/lodash": "^4.14.162",
+    "@types/node": "^14.14.2",
+    "@types/react": "^16.9.53",
+    "@types/react-dom": "^16.9.8",
+    "@types/react-plotly.js": "^2.2.4",
+    "parcel-bundler": "^1.12.4"
+  },
+  "dependencies": {
+    "axios": "^0.21.0",
+    "lodash": "^4.17.20",
+    "plotly.js": "^1.57.1",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-plotly.js": "^2.5.0",
+    "typescript": "^4.0.3"
+  }
+}
