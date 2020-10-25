@@ -4,11 +4,11 @@ import * as ReactDOM from 'react-dom';
 import Plot from 'react-plotly.js';
 import * as _ from "lodash";
 
-type data_t = {date: string, cases: number, deaths: number, sum: number};
+type raw_data_t = {date: Array<string>, cases: Array<number>, deaths: Array<number>};
 type graph_t = {x: Array<number>, y: Array<number>, z: Array<number>};
 
 // Load data from UK government web API
-async function loadData(): Promise<Array<data_t>> {
+async function loadData(): Promise<raw_data_t> {
   const response = await axios.get('https://api.coronavirus.data.gov.uk/v1/data', {
     params: {
       filters: 'areaType=overview',
@@ -19,19 +19,26 @@ async function loadData(): Promise<Array<data_t>> {
       }
     }
   });
-  return response.data.data;
+  const data = response.data.data;
+  return {
+    date: _.map(data, i => i.date),
+    cases: _.map(data, i => i.cases),
+    deaths: _.map(data, i => i.deaths)
+  };
 }
 
-// Add rolling sum of cases for the previous specified number of days
-function addSum(data: Array<{cases: number, sum: number}>, days: number): void {
-  if (days > data.length) {
-    days = data.length;
+// Get rolling sum of the previous specified interval
+function getRolling(data: Array<number>, interval: number, scale: number): Array<number> {
+  const rolling = Array<number>();
+  if (interval <= data.length) {
+    let sum = _.reduce(_.take(data, interval), (r, v) => r + v, 0);
+    rolling.push(sum/scale);
+    for (let t = 1, b = interval; b < data.length; ++t, ++b) {
+      sum = sum - data[t - 1] + data[b];
+      rolling.push(sum/scale);
+    }
   }
-  data[0].sum = _.reduce(_.take(data, days), (r, v) => r + v.cases, 0);
-  for (let t = 1, b = days; b < data.length; ++t, ++b) {
-    data[t].sum = data[t - 1].sum - data[t - 1].cases + data[b].cases;
-  }
-  _.remove(data, i => i.sum == undefined);
+  return rolling;
 }
 
 const App: React.FC<{days: number}> = ({days = 0}) => {
@@ -40,12 +47,11 @@ const App: React.FC<{days: number}> = ({days = 0}) => {
   React.useEffect(() => {
     // Load the data
     loadData().then(data => {
-      addSum(data, days);
       // Update graph
       setData({
-        x: _.map(data, i => i.cases),
-        y: _.map(data, i => i.sum),
-        z: _.map(data, i => i.deaths)
+        x: data.cases,
+        y: getRolling(data.cases, 14, 1), // rolling sum of last 14 days
+        z: getRolling(data.deaths, 7, 7)  // rolling average of last 7 days
       });
     });
   }, [days] /* only update when days changes */);
@@ -85,7 +91,8 @@ const App: React.FC<{days: number}> = ({days = 0}) => {
             },
             zaxis: {
               title: 'New deaths each day',
-              type: 'log'
+              type: 'log',
+              range: [ 0, 3 ],
             },
             camera: {
               eye: {x: 1.99827922632198, y: -0.4889930973010233, z: 0.5429281572031415},
