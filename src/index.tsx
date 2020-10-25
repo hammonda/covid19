@@ -65,6 +65,7 @@ const App: React.FC<{days: number}> = ({days = 0}) => {
               color: 'black',
               width: 1
             },
+            hovertemplate: 'New deaths: %{z}<br>New cases: %{x}<br>Active cases: %{y}'
           },
         ]}
         layout={{
