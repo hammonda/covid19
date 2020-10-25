@@ -5,7 +5,7 @@ import Plot from 'react-plotly.js';
 import * as _ from "lodash";
 
 type data_t = {date: string, cases: number, deaths: number, sum: number};
-type graph_y = {x: Array<number>, y: Array<number>, z: Array<number>};
+type graph_t = {x: Array<number>, y: Array<number>, z: Array<number>};
 
 // Load data from UK government web API
 async function loadData(): Promise<Array<data_t>> {
@@ -35,7 +35,7 @@ function addSum(data: Array<{cases: number, sum: number}>, days: number): void {
 }
 
 const App: React.FC<{days: number}> = ({days = 0}) => {
-  const [data, setData] = React.useState<graph_y>();
+  const [data, setData] = React.useState<graph_t>();
 
   React.useEffect(() => {
     // Load the data
@@ -73,14 +73,17 @@ const App: React.FC<{days: number}> = ({days = 0}) => {
           title: 'Covid-19 Trace',
           scene: {
             xaxis: {
+              title: 'New cases each day',
               type: 'log',
-              range: [ 2, 5 ]
+              range: [ 2, 5 ],
             },
             yaxis: {
+              title: 'Active cases',
               type: 'log',
               range: [ 3, 5.69897 ]
             },
             zaxis: {
+              title: 'New deaths each day',
               type: 'log'
             }
           },
