@@ -52,7 +52,7 @@ const App: React.FC<{days: number}> = ({days = 0}) => {
 
   return (
     <div>
-    { data && data.x &&
+    { data &&
       <Plot
         data={[
           {
@@ -85,6 +85,11 @@ const App: React.FC<{days: number}> = ({days = 0}) => {
             zaxis: {
               title: 'New deaths each day',
               type: 'log'
+            },
+            camera: {
+              eye: {x: 1.99827922632198, y: -0.4889930973010233, z: 0.5429281572031415},
+              up: { x: 0, y: 0, z: 1},
+              center: { x: 0, y: 0, z: 0}
             }
           },
           margin: {
@@ -94,6 +99,8 @@ const App: React.FC<{days: number}> = ({days = 0}) => {
             t: 0
           },
         }}
+        // degug message to capture good camera settings
+        onUpdate={(figure) => console.log(figure)}
       />
     }
     </div>
