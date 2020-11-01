@@ -39,29 +39,46 @@ function getRolling(data: Array<number>, interval: number, scale: number): Array
 }
 
 loadData().then(data => {
+  const cases = getRolling(data.cases, 7.0, 7.0);
+  const active = getRolling(cases, 14.0, 1.0);
+  const r = _.map(active, (v, i) => 14.0 * cases[i] / v);
+  const colors = _.map(r, v => (v > 1) ? 'red' : 'green');
+
   Plotly.newPlot('root', [
     {
-      x: data.cases,
-      y: getRolling(data.cases, 14, 1), // rolling sum of last 14 days
+      x: r,
+      y: active, // rolling sum of last 14 days
       z: getRolling(data.deaths, 7, 7), // rolling average of last 7 days
       type: 'scatter3d',
       mode: 'lines',
       line: {
-        color: 'black',
+        color: colors,
         width: 1,
         shape: 'spline'
       },
-      hovertemplate: 'New deaths: %{z}<br>New cases: %{x}<br>Active cases: %{y}'
+      hovertemplate: 'New deaths: %{z}<br>R: %{x}<br>Active cases: %{y}'
     },
+    /*
+    {
+      type: 'mesh3d',
+      opacity: 0.05,
+      color: 'red',
+      x: [1,1,1,1],
+      y: [1000,1000,1000000,11000000],
+      z: [0,1000,1000,0],
+      i: [0,0],
+      j: [1,2],
+      k: [2,3]
+    }*/
   ], {
     width: window.innerWidth,
     height: window.innerHeight,
     title: 'Covid-19 Trace',
     scene: {
       xaxis: {
-        title: 'New cases each day',
-        type: 'log',
-        range: [ 2, 5 ],
+        title: 'R',
+        type: 'linear',
+        range: [ 0, 3 ],
       },
       yaxis: {
         title: 'Active cases',
@@ -70,13 +87,13 @@ loadData().then(data => {
       },
       zaxis: {
         title: 'New deaths each day',
-        type: 'log',
-        range: [ 0, 3 ],
+        //type: 'log',
+        range: [ 0, 1000 ],
       },
       camera: {
-        eye: {x: 1.99827922632198, y: -0.4889930973010233, z: 0.5429281572031415},
-        up: { x: 0, y: 0, z: 1},
-        center: { x: 0, y: 0, z: 0}
+        eye: {x: -1.9257754289657114, y: -0.8855855700861778, z: 0.18474927520586074},
+        up: {x: 0, y: 0, z: 1},
+        center: {x: 0, y: 0, z: 0}
       }
     },
     margin: {
@@ -86,4 +103,9 @@ loadData().then(data => {
       t: 0
     }
   });
+/*
+  document.getElementById('root').on('plotly_relayout', event => {
+    console.log(event);
+  });
+*/
 });
