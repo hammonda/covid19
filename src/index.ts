@@ -45,14 +45,15 @@ loadData().then(data => {
   const deaths = getRolling(data.deaths, 7, 7);
   const colors = _.map(r, v => (v > 1) ? 'red' : 'green');
 
-  const ht_average = 'Deaths (rolling average): %{z}<br>R: %{x}<br>Active cases: %{y}';
-  const ht_latest = 'Deaths: %{z}<br>R: %{x}<br>Active cases: %{y}';
+  const ht_average = 'Date: <b>%{customdata}</b><br>Deaths (rolling average): %{z:.1f}<br>Active cases: %{y}<br>R: %{x:.3f}<extra></extra>';
+  const ht_latest = 'Date: <b>%{customdata}</b><br>Deaths: %{z}<br>Active cases: %{y}<br>R: %{x:.3f}<extra></extra>';
 
   Plotly.newPlot('root', [
     {
       x: r,
       y: active,
       z: deaths,
+      customdata: data.date,
       type: 'scatter3d',
       mode: 'lines+markers',
       line: {
@@ -64,12 +65,18 @@ loadData().then(data => {
         size: 5,
         opacity: 0.25
       },
-      hovertemplate: ht_average
+      hovertemplate: ht_average,
+      hoverlabel: {
+        font: {
+          size: 12
+        }
+      }
     },
     {
       x: [r[0]],
       y: [active[0]],
       z: [deaths[0]],
+      customdata: data.date,
       type: 'scatter3d',
       mode: 'markers',
       marker: {
@@ -82,6 +89,7 @@ loadData().then(data => {
       x: [r[0]],
       y: [active[0]],
       z: [data.deaths[0]],
+      customdata: data.date,
       type: 'scatter3d',
       mode: 'markers',
       marker: {
@@ -131,7 +139,8 @@ loadData().then(data => {
       l: 0,
       r: 0,
       t: 0
-    }
+    },
+    showlegend: false
   });
 
 /*
