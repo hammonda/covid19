@@ -1,8 +1,9 @@
 import axios from 'axios';
 import * as Plotly from 'plotly.js-dist';
-import * as _ from "lodash";
+import * as _ from 'lodash';
+import moment from 'moment';
 
-type raw_data_t = {date: Array<string>, cases: Array<number>, deaths: Array<number>};
+type raw_data_t = {date: Array<moment.Moment>, cases: Array<number>, deaths: Array<number>};
 
 // Load data from UK government web API
 async function loadData(): Promise<raw_data_t> {
@@ -18,7 +19,7 @@ async function loadData(): Promise<raw_data_t> {
   });
   const data = response.data.data;
   return {
-    date: _.map(data, i => i.date),
+    date: _.map(data, i => moment(i.date, 'YYYY-MM-DD')),
     cases: _.map(data, i => i.cases),
     deaths: _.map(data, i => i.deaths)
   };
@@ -44,18 +45,19 @@ loadData().then(data => {
   const r = _.map(active, (v, i) => 14.0 * cases[i] / v);
   const deaths = getRolling(data.deaths, 7, 7);
   const colors = _.map(r, v => (v > 1) ? 'red' : 'green');
+  const dateLabels = _.map(data.date, (v, i) => i % 14 == 0 ? v.format('D/M') : '');
+  const customdata = _.map(data.date, (v, i) => [v.format('Do MMMM'), data.deaths[i], data.cases[i]]);
 
-  const ht_average = 'Date: <b>%{customdata}</b><br>Deaths (rolling average): %{z:.1f}<br>Active cases: %{y}<br>R: %{x:.3f}<extra></extra>';
-  const ht_latest = 'Date: <b>%{customdata}</b><br>Deaths: %{z}<br>Active cases: %{y}<br>R: %{x:.3f}<extra></extra>';
+  const hovertemplate = 'Date: <b>%{customdata[0]}</b><br>New deaths: %{customdata[1]}<br>New cases: %{customdata[2]}<br>Rolling average deaths: %{z:.1f}<br>Active cases: %{y}<br><b>R: %{x:.3f}</b><extra></extra>';
 
   Plotly.newPlot('root', [
     {
       x: r,
       y: active,
       z: deaths,
-      customdata: data.date,
+      customdata: customdata,
       type: 'scatter3d',
-      mode: 'lines+markers',
+      mode: 'lines+markers+text',
       line: {
         color: colors,
         width: 3,
@@ -65,38 +67,53 @@ loadData().then(data => {
         size: 5,
         opacity: 0.25
       },
-      hovertemplate: ht_average,
+      text: dateLabels,
+      textposition: 'right',
+      hovertemplate: hovertemplate,
       hoverlabel: {
         font: {
-          size: 12
-        }
+          size: 11
+        },
+        bgcolor: 'white'
       }
     },
     {
       x: [r[0]],
       y: [active[0]],
       z: [deaths[0]],
-      customdata: data.date,
+      customdata: customdata,
       type: 'scatter3d',
       mode: 'markers',
       marker: {
         color: r[0] > 1.0 ? 'red': 'green',
         opacity: 0.5
       },
-      hovertemplate: ht_average
+      hovertemplate: hovertemplate,
+      hoverlabel: {
+        font: {
+          size: 11
+        }
+      }
     },
     {
       x: [r[0]],
       y: [active[0]],
       z: [data.deaths[0]],
-      customdata: data.date,
+      customdata: customdata,
       type: 'scatter3d',
-      mode: 'markers',
+      mode: 'markers+text',
       marker: {
         color: 'blue',
         opacity: 0.5
       },
-      hovertemplate: ht_latest
+      text: 'Latest',
+      textposition: 'top',
+      hovertemplate: hovertemplate,
+      hoverlabel: {
+        font: {
+          size: 11
+        }
+      }
     }
     /*
     {
@@ -113,11 +130,11 @@ loadData().then(data => {
   ], {
     width: window.innerWidth,
     height: window.innerHeight,
-    title: 'Covid-19 Trace',
+    title: 'UK COVID-19 Trace',
     scene: {
       xaxis: {
         title: 'R',
-        range: [0, 3],
+        range: [0, 3.25],
       },
       yaxis: {
         title: 'Active cases',
@@ -126,7 +143,8 @@ loadData().then(data => {
       },
       zaxis: {
         title: 'Deaths',
-        range: [0, 1000],
+        type: 'log',
+        range: [0.69897, 3],
       },
       camera: {
         eye: {x: -1.9257754289657114, y: -0.8855855700861778, z: 0.18474927520586074},
@@ -138,7 +156,7 @@ loadData().then(data => {
       b: 100,
       l: 0,
       r: 0,
-      t: 0
+      t: 50
     },
     showlegend: false
   });
