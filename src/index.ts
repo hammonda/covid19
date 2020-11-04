@@ -144,7 +144,7 @@ loadData().then(data => {
       zaxis: {
         title: 'Deaths',
         type: 'log',
-        range: [0.69897, 3],
+        range: [0.69897, 3.301],
       },
       camera: {
         eye: {x: -1.9257754289657114, y: -0.8855855700861778, z: 0.18474927520586074},
