@@ -2,7 +2,6 @@ import axios from 'axios';
 import * as Plotly from 'plotly.js-dist';
 import * as _ from 'lodash';
 import moment from 'moment';
-import { truncateSync } from 'fs';
 
 type raw_data_t = {date: Array<moment.Moment>, cases: Array<number>, deaths: Array<number>};
 
