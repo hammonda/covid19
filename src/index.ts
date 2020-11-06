@@ -2,6 +2,7 @@ import axios from 'axios';
 import * as Plotly from 'plotly.js-dist';
 import * as _ from 'lodash';
 import moment from 'moment';
+import { truncateSync } from 'fs';
 
 type raw_data_t = {date: Array<moment.Moment>, cases: Array<number>, deaths: Array<number>};
 
@@ -46,9 +47,14 @@ loadData().then(data => {
   const deaths = getRolling(data.deaths, 7, 7);
   const colors = _.map(r, v => (v > 1) ? 'red' : 'green');
   const dateLabels = _.map(data.date, (v, i) => i % 14 == 0 ? v.format('D/M') : '');
-  const customdata = _.map(data.date, (v, i) => [v.format('Do MMMM'), data.deaths[i], data.cases[i]]);
+  const customdata = _.map(data.date, (v, i) => [
+    v.format('Do MMMM YYYY'),
+    data.deaths[i],
+    data.cases[i].toLocaleString(),
+    deaths[i],
+    active[i] ? Math.round(active[i]).toLocaleString(): '']);
 
-  const hovertemplate = 'Date: <b>%{customdata[0]}</b><br>New deaths: %{customdata[1]}<br>New cases: %{customdata[2]}<br>Rolling average deaths: %{z:.1f}<br>Active cases: %{y}<br><b>R: %{x:.3f}</b><extra></extra>';
+  const hovertemplate = '<b>%{customdata[0]}</b><br>New deaths: %{customdata[1]}<br>New cases: %{customdata[2]}<br>Rolling average deaths: %{customdata[3]:.1f}<br>Active cases: %{customdata[4]}<br><b>R: %{x:.3f}</b><extra></extra>';
 
   Plotly.newPlot('root', [
     {
@@ -130,7 +136,7 @@ loadData().then(data => {
   ], {
     width: window.innerWidth,
     height: window.innerHeight,
-    title: 'UK COVID-19 Trace',
+    title: `<b>UK COVID-19 Trace</b><br>${customdata[0][0]}, ${data.deaths[0]} new deaths, ${data.cases[0].toLocaleString()} new cases`,
     scene: {
       xaxis: {
         title: 'R',
@@ -153,10 +159,7 @@ loadData().then(data => {
       }
     },
     margin: {
-      b: 100,
-      l: 0,
-      r: 0,
-      t: 50
+      b: 150
     },
     showlegend: false
   });
