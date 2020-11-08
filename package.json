@@ -1,12 +1,18 @@
 {
   "name": "covid19",
   "version": "0.0.1",
-  "description": "experimental",
+  "description": "UK COVID-19 Trace",
   "main": "dist/index.html",
   "scripts": {
+    "clean": "rm -rf dist/",
     "build": "parcel build src/index.html",
     "dev": "parcel src/index.html"
   },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:hammonda/covid19.git"
+  },
+  "license": "MIT",
   "devDependencies": {
     "@types/axios": "^0.14.0",
     "@types/lodash": "^4.14.162",
@@ -19,6 +25,7 @@
     "axios": "^0.21.0",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
+    "plotly.js": "^1.57.1",
     "plotly.js-dist": "^1.57.1"
   }
 }
