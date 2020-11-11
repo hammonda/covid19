@@ -77,7 +77,7 @@ loadData({areaType: 'overview'}).then(data => {
 
   const colors = _.map(stats.r, v => (v > 1) ? 'red' : 'green');
   const dateLabels = _.map(data.date, (v, i) => i % windowing == 0 ? v.format('D/M') : '');
-  const markerSize = _.map(stats.active, (v, i) => i == 0 ? 16 : 10);
+  const markerSize = _.map(stats.active, (v, i) => i == 0 ? 20 : 10);
   const customData = _.map(data.date, (v, i) => [
     v.format('Do MMMM YYYY'),
     data.deaths[i],
@@ -136,7 +136,7 @@ loadData({areaType: 'overview'}).then(data => {
       mode: 'markers+text',
       marker: {
         color: 'blue',
-        size: [16],
+        size: [10],
         opacity: 0.5
       },
       text: dateLabels,
