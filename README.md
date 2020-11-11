@@ -1,4 +1,4 @@
-# UK COVID-19 Trace
+# UK COVID-19 3D graphical visualization
 
 ```
 $ npm i
