@@ -94,7 +94,7 @@ loadData({areaType: 'overview'}).then(data => {
     '<b>R: %{x:.3f}</b><extra></extra>'].join('<br>');
 
     const title = [
-      '<b>UK COVID-19 Trace</b>',
+      '<b>UK COVID-19 3D graphical visualization</b>',
       `${customData[0][0]}`,
       `${data.deaths[0]} new deaths, ${data.cases[0].toLocaleString()} new cases, ${data.cumDeaths[0].toLocaleString()} total deaths`
     ].join('<br>');
