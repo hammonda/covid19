@@ -70,6 +70,15 @@ function getStats(raw: raw_data_t, casesAveraging: number,
   }
 }
 
+function projectLinear(data: Array<number>, steps: number): Array<number> {
+  const delta = data[0] - data[1];
+  const projection = [ data[0] + delta];
+  while (--steps > 0) {
+    projection.push(_.last(projection) + delta);
+  }
+  return projection;
+}
+
 loadData({areaType: 'overview'}).then(data => {
   const averaging = 7;
   const windowing = 14;
@@ -92,6 +101,12 @@ loadData({areaType: 'overview'}).then(data => {
     'Rolling average deaths: %{customdata[3]:.1f}',
     'Active cases: %{customdata[4]}',
     '<b>R: %{x:.3f}</b><extra></extra>'].join('<br>');
+
+  const projectTemplate = [
+    'Rolling average deaths: %{z:.1f}',
+    'Active cases: %{y}',
+    '<b>R: %{x:.3f}</b><extra></extra>'
+  ].join('<br>')
 
     const title = [
       '<b>UK COVID-19 3D graphical visualization</b>',
@@ -142,6 +157,26 @@ loadData({areaType: 'overview'}).then(data => {
       text: dateLabels,
       textposition: 'left',
       hovertemplate: hoverTemplate,
+      hoverlabel: {
+        font: {
+          size: 11
+        }
+      }
+    },
+    {
+      x: projectLinear(stats.r, 5),
+      y: projectLinear(stats.active, 5),
+      z: projectLinear(stats.rollingDeaths, 5),
+      type: 'scatter3d',
+      mode: 'markers',
+      name: 'linear projection',
+      marker: {
+        color: 'orange',
+        size: [10],
+        opacity: 0.25
+      },
+      visible: 'legendonly',
+      hovertemplate: projectTemplate,
       hoverlabel: {
         font: {
           size: 11
