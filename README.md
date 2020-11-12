@@ -4,3 +4,7 @@
 $ npm i
 $ npm run dev
 ```
+
+### example
+
+![alt text](example.PNG)
