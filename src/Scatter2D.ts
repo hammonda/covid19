@@ -49,6 +49,18 @@ export class Scatter2D extends GraphBase implements Graph {
              size: 11
            }
          }
+      },
+      {
+        x: [0, 1E6],
+        y: [1.0, 1.0],
+        name: 'R = 1',
+        mode: 'lines',
+        line: {
+          width: 1,
+          color: 'green',
+          opacity: 0.25,
+          dash: 'dot'
+        }
       }
     ], {
       width: 0.8 * window.innerWidth,

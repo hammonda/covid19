@@ -42,7 +42,7 @@ export class Scatter3D extends GraphBase implements Graph {
         mode: 'lines+markers+text',
         line: {
           color: this.colors,
-          width: 3,
+          width: 2,
           shape: 'spline'
         },
         marker: {
@@ -78,7 +78,8 @@ export class Scatter3D extends GraphBase implements Graph {
           font: {
             size: 11
           }
-        }
+        },
+        visible: 'legendonly',
       },
       {
         x: projectLinear(this.stats.r, 5),
