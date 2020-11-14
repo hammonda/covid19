@@ -28,7 +28,7 @@ export class Scatter2D extends GraphBase implements Graph {
       {
         y: this.stats.r,
         x: this.stats.active,
-        name: `${this.deathsAveraging} day rolling average deaths`,
+        name: 'R vs Active cases',
         customdata: this.customData,
         type: 'scatter',
         mode: 'lines+markers+text',
@@ -77,7 +77,7 @@ export class Scatter2D extends GraphBase implements Graph {
       },
       showlegend: true,
       xaxis: {
-        title: 'Active cases',
+        title: `Active cases (${this.activeWindow} day rolling sum of new cases)`,
         showline: true,
         type: 'log',
         range: [3.30102999566, 5.69897],

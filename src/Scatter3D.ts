@@ -36,7 +36,7 @@ export class Scatter3D extends GraphBase implements Graph {
         x: this.stats.r,
         y: this.stats.active,
         z: this.stats.rollingDeaths,
-        name: `${this.deathsAveraging} day rolling average deaths`,
+        name: `${this.deathsAveraging} day rolling average of new deaths`,
         customdata: this.customData,
         type: 'scatter3d',
         mode: 'lines+markers+text',
@@ -111,12 +111,12 @@ export class Scatter3D extends GraphBase implements Graph {
           range: [0, 3.25],
         },
         yaxis: {
-          title: 'Active cases',
+          title: `Active cases (${this.activeWindow} day rolling sum of new cases)`,
           type: 'log',
           range: [3, 5.69897]
         },
         zaxis: {
-          title: 'Deaths',
+          title: 'Deaths (daily)',
           type: 'log',
           range: [0.69897, 3.30103],
         },
