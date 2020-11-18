@@ -8,6 +8,7 @@ import * as _ from 'lodash';
 import $ from 'jquery';
 
 import { loadData } from './data';
+//import { loadData } from './CSSEGISandData';
 import { Graph } from './Graph';
 import { Scatter2D } from './Scatter2D';
 import { Scatter3D } from './Scatter3D';
