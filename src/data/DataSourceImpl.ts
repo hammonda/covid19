@@ -4,7 +4,7 @@
 // @date 21 Nov 2020
 //
 
-import {CountryData} from './DataSource';
+import { CountryData } from './DataSource';
 
 export class DataSourceImpl {
   readonly source: string;

@@ -41,7 +41,7 @@ graphSelect.on('change', () => {
 function load() {
   graphSelect.prop('disabled', true);
   dataSource.load().then(() => {
-    const data = dataSource.getCountryData('US');
+    const data = dataSource.getCountryData('Korea, South');
     if (data) {
       _.each(graphs, (graph, i) => {
         graph.setRawData(data);

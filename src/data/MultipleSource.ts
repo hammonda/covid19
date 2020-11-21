@@ -4,10 +4,8 @@
 // @date 21 Nov 2020
 //
 
-import * as _ from 'lodash';
-
-import {DataSource} from './DataSource';
-import {DataSourceImpl} from './DataSourceImpl';
+import { DataSource } from './DataSource';
+import { DataSourceImpl } from './DataSourceImpl';
 
 export class MultipleSource extends DataSourceImpl implements DataSource {
   private sources: Array<DataSource>;

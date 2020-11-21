@@ -8,7 +8,7 @@ import * as _ from 'lodash';
 
 import { CountryData } from './data/DataSource';
 
-export type stats_t  = {
+export type stats_t = {
   readonly rawData: CountryData,
   readonly cases: readonly number[],
   readonly active: readonly number[],

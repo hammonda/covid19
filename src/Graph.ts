@@ -27,8 +27,8 @@ export class GraphBase {
   protected stats: (stats_t | null) = null;
 
   // graph data
-  protected colors: Array<string>= [];
-  protected dateLabels: Array<string> =[];
+  protected colors: Array<string> = [];
+  protected dateLabels: Array<string> = [];
   protected markerSize: Array<number> = [];
   protected customData: Array<[
     string, // date

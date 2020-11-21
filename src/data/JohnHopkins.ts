@@ -9,8 +9,8 @@ import * as _ from 'lodash';
 import {parse} from 'papaparse'
 import moment from 'moment';
 
-import {DataSource} from './DataSource';
-import {DataSourceImpl} from './DataSourceImpl';
+import { DataSource } from './DataSource';
+import { DataSourceImpl } from './DataSourceImpl';
 
 export class JohnHopkins extends DataSourceImpl implements DataSource {
   private dates: Array<moment.Moment>;
@@ -50,11 +50,11 @@ export class JohnHopkins extends DataSourceImpl implements DataSource {
     return parse((await axios.get(JohnHopkins.endpoint + fileName)).data).data as Array<Array<string>>;
   }
 
-  private makeKey(column: Array<string>): string {
+  private makeKey(column: readonly string[]): string {
     return column[1] + (column[0] ? ': ' + column[0] : '');
   }
 
-  private difference(data: Array<number>): Array<number> {
+  private difference(data: readonly number[]): Array<number> {
     const diff = new Array<number>();
     for (let i = 0; i < data.length - 1; ++i) {
       diff.push(data[i] - data[i + 1]);
