@@ -7,7 +7,7 @@
 import { projectLinear } from './stats';
 import { Graph, GraphBase } from './Graph';
 
-import * as Plotly from 'plotly.js-dist';
+const Plotly = require('plotly.js-dist');
 
 export class Scatter3D extends GraphBase implements Graph {
   private hoverTemplate: string;
@@ -31,6 +31,9 @@ export class Scatter3D extends GraphBase implements Graph {
   }
 
   public render(divId: string): void {
+    if (!this.stats)
+      return;
+
     Plotly.newPlot(divId, [
       {
         x: this.stats.r,
@@ -61,7 +64,7 @@ export class Scatter3D extends GraphBase implements Graph {
       {
         x: [this.stats.r[0]],
         y: [this.stats.active[0]],
-        z: [this.rawData.deaths[0]],
+        z: [this.stats.rawData.deaths[0]],
         name: 'daily deaths',
         customdata: this.customData,
         type: 'scatter3d',

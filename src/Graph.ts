@@ -6,38 +6,38 @@
 
 import * as _ from 'lodash';
 
-import { raw_data_t } from './data';
+import { CountryData } from './data/DataSource';
 import { stats_t, getStats } from './stats';
 
 
 export interface Graph {
-  setRawData(rawData: raw_data_t): void;
+  setRawData(rawData: CountryData): void;
   calcStats(): void;
   render(divId: string): void;
 }
 
 export class GraphBase {
   // raw data
-  protected rawData: raw_data_t;
+  protected rawData: (CountryData | null) = null;
 
   // statistical data
   protected casesAveraging: number;
   protected deathsAveraging: number;
   protected activeWindow: number;
-  protected stats: stats_t;
+  protected stats: (stats_t | null) = null;
 
   // graph data
-  protected colors: Array<string>;
-  protected dateLabels: Array<string>;
-  protected markerSize: Array<number>;
+  protected colors: Array<string>= [];
+  protected dateLabels: Array<string> =[];
+  protected markerSize: Array<number> = [];
   protected customData: Array<[
     string, // date
     number, // deaths
     string, // cases
     number, // rolling deaths
     string  // active
-  ]>;
-  protected title: string;
+  ]> = [];
+  protected title: string = '';
 
   constructor(casesAveraging: number, deathsAveraging: number,
     activeWindow: number) {
@@ -46,51 +46,55 @@ export class GraphBase {
     this.activeWindow = activeWindow;
   }
 
-  public setRawData(rawData: raw_data_t): void {
+  public setRawData(rawData: CountryData): void {
     this.rawData = rawData;
   }
 
   public calcStats(): void {
-    this.stats = getStats(this.rawData, this.casesAveraging, this.deathsAveraging,
-      this.activeWindow);
-    this.calcGraphData();
+    if (this.rawData) {
+      this.stats = getStats(this.rawData, this.casesAveraging, this.deathsAveraging,
+        this.activeWindow);
+      this.calcGraphData(this.stats);
+    }
   }
 
-  protected calcGraphData(): void {
-    this.setColors();
-    this.setDateLabels();
-    this.setMarkerSize();
-    this.setCustomData();
+  protected calcGraphData(stats: stats_t): void {
+    this.setColors(stats);
+    this.setDateLabels(stats);
+    this.setMarkerSize(stats);
+    this.setCustomData(stats);
     this.setTitle();
   }
 
-  protected setColors(): void {
-    this.colors = _.map(this.stats.r, v => (v > 1) ? 'red' : 'green');
+  protected setColors(stats: stats_t): void {
+    this.colors = _.map(stats.r, v => (v > 1) ? 'red' : 'green');
   }
 
-  protected setDateLabels(): void {
-    this.dateLabels = _.map(this.stats.rawData.date, (v, i) =>
+  protected setDateLabels(stats: stats_t): void {
+    this.dateLabels = _.map(stats.rawData.dates, (v, i) =>
       i % this.activeWindow == 0 ? v.format('D/M') : '');
   }
 
-  protected setMarkerSize(): void {
-    this.markerSize = _.map(this.stats.active, (v, i) => i == 0 ? 20 : 10);
+  protected setMarkerSize(stats: stats_t): void {
+    this.markerSize = _.map(stats.active, (v, i) => i == 0 ? 20 : 10);
   }
 
-  protected setCustomData(): void {
-    this.customData = _.map(this.stats.rawData.date, (v, i) => [
+  protected setCustomData(stats: stats_t): void {
+    this.customData = _.map(stats.rawData.dates, (v, i) => [
       v.format('Do MMMM YYYY'),
-      this.stats.rawData.deaths[i],
-      this.stats.rawData.cases[i].toLocaleString(),
-      this.stats.rollingDeaths[i],
-      this.stats.active[i] ? Math.round(this.stats.active[i]).toLocaleString(): '']);
+      stats.rawData.deaths[i],
+      stats.rawData.cases[i].toLocaleString(),
+      stats.rollingDeaths[i],
+      stats.active[i] ? Math.round(stats.active[i]).toLocaleString(): '']);
   }
 
   protected setTitle(): void {
-    this.title = [
-      '<b>UK COVID-19 graphical visualization</b>',
-      `${this.customData[0][0]}`,
-      `${this.rawData.deaths[0]} new deaths, ${this.rawData.cases[0].toLocaleString()} new cases, ${this.rawData.cumDeaths[0].toLocaleString()} total deaths`
-    ].join('<br>');
+    if (this.rawData) {
+      this.title = [
+        '<b>UK COVID-19 graphical visualization</b>',
+        `${this.customData[0][0]}`,
+        `${this.rawData.deaths[0]} new deaths, ${this.rawData.cases[0].toLocaleString()} new cases, ${this.rawData.cumDeaths[0].toLocaleString()} total deaths`
+      ].join('<br>');
+    }
   }
 }

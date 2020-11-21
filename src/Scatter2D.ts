@@ -6,7 +6,7 @@
 
 import { Graph, GraphBase } from './Graph';
 
-import * as Plotly from 'plotly.js-dist';
+const Plotly = require('plotly.js-dist');
 
 export class Scatter2D extends GraphBase implements Graph {
   private hoverTemplate: string;
@@ -24,6 +24,9 @@ export class Scatter2D extends GraphBase implements Graph {
   }
 
   public render(divId: string): void {
+    if (!this.stats)
+      return;
+
     Plotly.newPlot(divId, [
       {
         y: this.stats.r,
