@@ -111,17 +111,17 @@ export class Scatter3D extends GraphBase implements Graph {
       scene: {
         xaxis: {
           title: 'R',
-          range: [0, 3.25],
+          range: [0, 3.5],
         },
         yaxis: {
           title: `Active cases (${this.activeWindow} day rolling sum of new cases)`,
           type: 'log',
-          range: [3, 5.69897]
+          range: this.getLogAxisRange(this.stats.activeMin, this.stats.activeMax, 2)
         },
         zaxis: {
           title: 'Deaths (daily)',
           type: 'log',
-          range: [0.69897, 3.30103],
+          range: this.getLogAxisRange(this.stats.rollingDeathsMin, this.stats.rollingDeathsMax, 2),
         },
         camera: {
           eye: {x: -1.9257754289657114, y: -0.8855855700861778, z: 0.18474927520586074},

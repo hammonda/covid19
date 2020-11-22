@@ -27,6 +27,7 @@ export class Scatter2D extends GraphBase implements Graph {
     if (!this.stats)
       return;
 
+    const casesRange = this.getLogAxisRange(this.stats.activeMin, this.stats.activeMax, 2);
     Plotly.newPlot(divId, [
       {
         y: this.stats.r,
@@ -54,7 +55,7 @@ export class Scatter2D extends GraphBase implements Graph {
          }
       },
       {
-        x: [0, 1E6],
+        x: [0, Math.pow(10, casesRange[1])],
         y: [1.0, 1.0],
         name: 'R = 1',
         mode: 'lines',
@@ -83,13 +84,13 @@ export class Scatter2D extends GraphBase implements Graph {
         title: `Active cases (${this.activeWindow} day rolling sum of new cases)`,
         showline: true,
         type: 'log',
-        range: [3.30102999566, 5.69897],
+        range: casesRange,
       },
       yaxis: {
         showline: true,
         dtick: 0.25,
         title: 'R',
-        range: [0, 3.25],
+        range: [0, 3.5],
       },
       clickmode: 'event+select'
     },

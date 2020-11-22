@@ -97,4 +97,29 @@ export class GraphBase {
       ].join('<br>');
     }
   }
+
+  protected getLogAxisRange(minValue: number, maxValue: number,
+    decadeLimit: number): number[] {
+    const range = [this.minLogAxis(minValue), this.maxLogAxis(maxValue)];
+    if (range[1] - range[0] > decadeLimit) {
+      range[0] = Math.trunc(range[1] - decadeLimit);
+    }
+    return range;
+  }
+
+  protected minLogAxis(minValue: number): number {
+    if (minValue > 0) {
+    const log = Math.log10(minValue);
+    const power10 = Math.trunc(log);
+    return power10 + Math.log10(Math.trunc(Math.pow(10, (log - power10))));
+    } else {
+      return 1.0;
+    }
+  }
+
+  protected maxLogAxis(maxValue: number): number {
+    const log = Math.log10(maxValue);
+    const power10 = Math.trunc(log);
+    return (log - power10) < 0.69897 ? (power10 + 0.69897) : (power10 + 1);
+  }
 }

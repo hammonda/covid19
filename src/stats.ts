@@ -13,7 +13,11 @@ export type stats_t = {
   readonly cases: readonly number[],
   readonly active: readonly number[],
   readonly rollingDeaths: readonly number[],
-  readonly r: readonly number[]
+  readonly r: readonly number[],
+  readonly activeMin: number,
+  readonly activeMax: number,
+  readonly rollingDeathsMin: number,
+  readonly rollingDeathsMax: number
 }
 
 function getRolling(data: readonly number[], interval: number,
@@ -34,12 +38,17 @@ export function getStats(raw: CountryData, casesAveraging: number,
   deathsAveraging: number, activeWindow: number): stats_t {
   const cases = getRolling(raw.cases, casesAveraging, casesAveraging);
   const active = getRolling(cases, activeWindow, 1.0);
+  const rollingDeaths = getRolling(raw.deaths, deathsAveraging, deathsAveraging);
   return {
     rawData: raw,
     cases: cases,
     active: active,
-    rollingDeaths: getRolling(raw.deaths, deathsAveraging, deathsAveraging),
-    r: _.map(active, (v, i) => activeWindow * cases[i] / v)
+    rollingDeaths: rollingDeaths,
+    r: _.map(active, (v, i) => activeWindow * cases[i] / v),
+    activeMin: Math.min(...active),
+    activeMax: Math.max(...active),
+    rollingDeathsMin: Math.min(...rollingDeaths),
+    rollingDeathsMax: Math.min(...rollingDeaths)
   }
 }
 
