@@ -4,10 +4,10 @@
 // @date 21 Nov 2020
 //
 
-import { DataSource } from './DataSource';
-import { DataSourceImpl } from './DataSourceImpl';
+import DataSource from './DataSource';
+import DataSourceImpl from './DataSourceImpl';
 
-export class MultipleSource extends DataSourceImpl implements DataSource {
+export default class MultipleSource extends DataSourceImpl implements DataSource {
   private sources: Array<DataSource>;
 
   constructor(...sources: DataSource[]) {
@@ -16,6 +16,7 @@ export class MultipleSource extends DataSourceImpl implements DataSource {
   }
 
   public async load() : Promise<void> {
+    this.store.clear();
     for (const source of this.sources) {
       await source.load();
       for (const [key, value] of source.getStoreEntries()) {

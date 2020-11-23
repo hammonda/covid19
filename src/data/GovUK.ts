@@ -8,12 +8,12 @@ import axios from 'axios';
 import * as _ from 'lodash';
 import moment from 'moment';
 
-import { DataSource } from './DataSource';
-import { DataSourceImpl } from './DataSourceImpl';
+import DataSource from './DataSource';
+import DataSourceImpl from './DataSourceImpl';
 
 type options_t = {[key: string]: string};
 
-export class GovUK extends DataSourceImpl implements DataSource {
+export default class GovUK extends DataSourceImpl implements DataSource {
   private options: options_t;
   static readonly endpoint = 'https://api.coronavirus.data.gov.uk/v1/data';
 

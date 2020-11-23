@@ -10,13 +10,15 @@ import { CountryData } from './data/DataSource';
 import { stats_t, getStats } from './stats';
 
 
-export interface Graph {
+export default interface Graph {
+  readonly displayName: string;
   setRawData(rawData: CountryData): void;
   calcStats(): void;
   render(divId: string): void;
 }
 
 export class GraphBase {
+  readonly displayName: string;
   // raw data
   protected rawData: (CountryData | null) = null;
 
@@ -39,8 +41,9 @@ export class GraphBase {
   ]> = [];
   protected title: string = '';
 
-  constructor(casesAveraging: number, deathsAveraging: number,
+  constructor(displayName: string, casesAveraging: number, deathsAveraging: number,
     activeWindow: number) {
+    this.displayName = displayName;
     this.casesAveraging = casesAveraging;
     this.deathsAveraging = deathsAveraging;
     this.activeWindow = activeWindow;
@@ -91,7 +94,7 @@ export class GraphBase {
   protected setTitle(): void {
     if (this.rawData) {
       this.title = [
-        '<b>UK COVID-19 graphical visualization</b>',
+        `<b>${this.rawData.displayName} COVID-19 visualization</b>`,
         `${this.customData[0][0]}`,
         `${this.rawData.deaths[0]} new deaths, ${this.rawData.cases[0].toLocaleString()} new cases, ${this.rawData.cumDeaths[0].toLocaleString()} total deaths`
       ].join('<br>');
@@ -99,8 +102,8 @@ export class GraphBase {
   }
 
   protected getLogAxisRange(minValue: number, maxValue: number,
-    decadeLimit: number): number[] {
-    const range = [this.minLogAxis(minValue), this.maxLogAxis(maxValue)];
+    decadeLimit: number): [number, number] {
+    const range: [number, number] = [this.minLogAxis(minValue), this.maxLogAxis(maxValue)];
     if (range[1] - range[0] > decadeLimit) {
       range[0] = Math.trunc(range[1] - decadeLimit);
     }
@@ -121,5 +124,44 @@ export class GraphBase {
     const log = Math.log10(maxValue);
     const power10 = Math.trunc(log);
     return (log - power10) < 0.69897 ? (power10 + 0.69897) : (power10 + 1);
+  }
+
+  protected minMaxInActiveCasesRange(logCasesRange: [number, number],
+      prop: ('rollingDeaths' | 'r')): ([number, number] | null) {
+    if (!this.stats) {
+      return null;
+    } else {
+      const minCases = Math.pow(10, logCasesRange[0]);
+      const maxCases = Math.pow(10, logCasesRange[1]);
+      return _.reduce(this.stats.active, (result, val, i) => {
+        if (val >= minCases && val <= maxCases) {
+          const r = this.stats![prop][i];
+          return [Math.min(result[0], r), Math.max(result[1], r)];
+        } else {
+          return result;
+        }
+      }, [Number.MAX_VALUE, Number.MIN_VALUE]);
+    }
+  }
+
+  protected rRange(logCasesRange: [number, number], dtick: number):
+    ([number, number] | null) {
+    const range = this.minMaxInActiveCasesRange(logCasesRange, 'r');
+    if (range) {
+      range[0] = Math.trunc(range[0]/dtick)*dtick;
+      range[1] = (1 + Math.trunc(range[1]/dtick))*dtick;
+      return range;
+    } else {
+      return null;
+    }
+  }
+
+  protected deathsRange(logCasesRange: [number, number]): ([number, number] | null) {
+    const range = this.minMaxInActiveCasesRange(logCasesRange, 'rollingDeaths');
+    if (range) {
+      return [Math.log10(range[0]), this.maxLogAxis(range[1])];
+    } else {
+      return null;
+    }
   }
 }

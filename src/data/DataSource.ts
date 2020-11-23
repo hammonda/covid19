@@ -15,7 +15,7 @@ export type CountryData = {
   readonly cumDeaths: readonly number[]
 };
 
-export interface DataSource {
+export default interface DataSource {
   readonly source: string;
   getStoreEntries(): IterableIterator<[string, CountryData]>;
   getCountryKeys(): IterableIterator<string>;

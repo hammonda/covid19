@@ -5,17 +5,17 @@
 //
 
 import { projectLinear } from './stats';
-import { Graph, GraphBase } from './Graph';
+import Graph, { GraphBase } from './Graph';
 
 const Plotly = require('plotly.js-dist');
 
-export class Scatter3D extends GraphBase implements Graph {
+export default class Scatter3D extends GraphBase implements Graph {
   private hoverTemplate: string;
   private projectTemplate: string;
 
   constructor(casesAveraging: number, deathsAveraging: number,
     activeWindow: number) {
-    super(casesAveraging, deathsAveraging, activeWindow);
+    super('3D Scatter', casesAveraging, deathsAveraging, activeWindow);
     this.hoverTemplate = [
       '<b>%{customdata[0]}</b>',
       'New deaths: %{customdata[1]}',
@@ -34,6 +34,7 @@ export class Scatter3D extends GraphBase implements Graph {
     if (!this.stats)
       return;
 
+    const casesRange = this.getLogAxisRange(this.stats.activeMin, this.stats.activeMax, 2);
     Plotly.newPlot(divId, [
       {
         x: this.stats.r,
@@ -116,12 +117,12 @@ export class Scatter3D extends GraphBase implements Graph {
         yaxis: {
           title: `Active cases (${this.activeWindow} day rolling sum of new cases)`,
           type: 'log',
-          range: this.getLogAxisRange(this.stats.activeMin, this.stats.activeMax, 2)
+          range: casesRange
         },
         zaxis: {
           title: 'Deaths (daily)',
           type: 'log',
-          range: this.getLogAxisRange(this.stats.rollingDeathsMin, this.stats.rollingDeathsMax, 2),
+          range: this.deathsRange(casesRange)
         },
         camera: {
           eye: {x: -1.9257754289657114, y: -0.8855855700861778, z: 0.18474927520586074},

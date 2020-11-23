@@ -4,16 +4,16 @@
 // @date 13 Nov 2020
 //
 
-import { Graph, GraphBase } from './Graph';
+import Graph, {GraphBase } from './Graph';
 
 const Plotly = require('plotly.js-dist');
 
-export class Scatter2D extends GraphBase implements Graph {
+export default class Scatter2D extends GraphBase implements Graph {
   private hoverTemplate: string;
 
   constructor(casesAveraging: number, deathsAveraging: number,
     activeWindow: number) {
-    super(casesAveraging, deathsAveraging, activeWindow);
+    super('2D Scatter', casesAveraging, deathsAveraging, activeWindow);
     this.hoverTemplate = [
       '<b>%{customdata[0]}</b>',
       'New deaths: %{customdata[1]}',
@@ -90,7 +90,7 @@ export class Scatter2D extends GraphBase implements Graph {
         showline: true,
         dtick: 0.25,
         title: 'R',
-        range: [0, 3.5],
+        range: this.rRange(casesRange, 0.25),
       },
       clickmode: 'event+select'
     },

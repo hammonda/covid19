@@ -6,7 +6,7 @@
 
 import { CountryData } from './DataSource';
 
-export class DataSourceImpl {
+export default class DataSourceImpl {
   readonly source: string;
   protected store: Map<string, CountryData>;
 

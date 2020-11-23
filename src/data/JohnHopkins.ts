@@ -9,10 +9,10 @@ import * as _ from 'lodash';
 import {parse} from 'papaparse'
 import moment from 'moment';
 
-import { DataSource } from './DataSource';
-import { DataSourceImpl } from './DataSourceImpl';
+import DataSource from './DataSource';
+import DataSourceImpl from './DataSourceImpl';
 
-export class JohnHopkins extends DataSourceImpl implements DataSource {
+export default class JohnHopkins extends DataSourceImpl implements DataSource {
   private dates: Array<moment.Moment>;
   static readonly endpoint = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/';
 
@@ -35,14 +35,16 @@ export class JohnHopkins extends DataSourceImpl implements DataSource {
       const key = this.makeKey(column);
       const cumCases = _.reverse(_.map(_.drop(column, 4), v => Number(v)));
       const cumDeaths = _.reverse(_.map(_.drop(deaths[i], 4), v => Number(v)));
-      this.store.set(key, {
-        displayName: key,
-        dates: this.dates,
-        cases: this.difference(cumCases),
-        deaths: this.difference(cumDeaths),
-        cumCases: cumCases,
-        cumDeaths: cumDeaths
-      });
+      if (cumCases.length == this.dates.length + 1) {
+        this.store.set(key, {
+          displayName: key,
+          dates: this.dates,
+          cases: this.difference(cumCases),
+          deaths: this.difference(cumDeaths),
+          cumCases: cumCases,
+          cumDeaths: cumDeaths
+        });
+      }
     });
   }
 

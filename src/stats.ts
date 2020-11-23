@@ -37,7 +37,7 @@ function getRolling(data: readonly number[], interval: number,
 export function getStats(raw: CountryData, casesAveraging: number,
   deathsAveraging: number, activeWindow: number): stats_t {
   const cases = getRolling(raw.cases, casesAveraging, casesAveraging);
-  const active = getRolling(cases, activeWindow, 1.0);
+  const active = _.map(getRolling(cases, activeWindow, 1.0), i => i < 1 ? 0 : i);
   const rollingDeaths = getRolling(raw.deaths, deathsAveraging, deathsAveraging);
   return {
     rawData: raw,
