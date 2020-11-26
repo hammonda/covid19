@@ -44,8 +44,6 @@ const App: React.FC<Props> = (props: Props) => {
           graph.render(`graph-${i}`);
         });
       }
-      // Plotly js hack to fix bug in legend display
-      $('#graph-1 g .legendlines').addClass('d-none');
     }
   }, [loaded, windowSize, countrySelected]);
 

@@ -4,6 +4,8 @@
 // @date 13 Nov 2020
 //
 
+import $ from 'jquery';
+
 import { projectLinear } from './stats';
 import Graph, { GraphBase } from './Graph';
 
@@ -145,5 +147,7 @@ export default class Scatter3D extends GraphBase implements Graph {
     {
       displayModeBar: true
     });
+    // Plotly js hack to fix bug in legend display
+    $(`#${divId} g .legendlines`).addClass('d-none');
   }
 }
