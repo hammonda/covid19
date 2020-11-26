@@ -20,7 +20,9 @@ export default class MultipleSource extends DataSourceImpl implements DataSource
     for (const source of this.sources) {
       await source.load();
       for (const [key, value] of source.getStoreEntries()) {
-        this.store.set(key, value);
+        if (value.cases.length) {
+          this.store.set(key, value);
+        }
       };
     }
   }
