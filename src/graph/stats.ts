@@ -6,7 +6,7 @@
 
 import * as _ from 'lodash';
 
-import { CountryData } from './data/DataSource';
+import { CountryData } from '../data/DataSource';
 
 export type stats_t = {
   readonly rawData: CountryData,

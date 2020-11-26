@@ -6,7 +6,7 @@
 
 import * as _ from 'lodash';
 
-import { CountryData } from './data/DataSource';
+import { CountryData } from '../data/DataSource';
 import { stats_t, getStats } from './stats';
 
 

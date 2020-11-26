@@ -19,6 +19,7 @@
     "showlegend",
     "showline",
     "textposition",
+    "unlisten",
     "xaxis",
     "yaxis",
     "zaxis"
