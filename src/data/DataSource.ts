@@ -15,10 +15,17 @@ export type CountryData = {
   readonly cumDeaths: readonly number[]
 };
 
+export type RData = {
+  readonly dates: readonly moment.Moment[],
+  readonly rMin: readonly number[],
+  readonly rMax: readonly number[]
+}
+
 export default interface DataSource {
   readonly source: string;
   getStoreEntries(): IterableIterator<[string, CountryData]>;
   getCountryKeys(): IterableIterator<string>;
   getCountryData(countryKey: string): (CountryData | undefined);
+  getRData?(countryKey: string): (RData | undefined);
   load(): Promise<void>;
 }
