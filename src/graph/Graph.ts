@@ -96,7 +96,7 @@ export class GraphBase {
       this.title = [
         `<b>${this.rawData.displayName} COVID-19 visualization</b>`,
         `${this.customData[0][0]}`,
-        `${this.rawData.deaths[0]} new deaths, ${this.rawData.cases[0].toLocaleString()} new cases, ${this.rawData.cumDeaths[0].toLocaleString()} total deaths`
+        `${this.rawData.deaths[0].toLocaleString()} new deaths, ${this.rawData.cases[0].toLocaleString()} new cases, ${this.rawData.cumDeaths[0].toLocaleString()} total deaths`
       ].join('<br>');
     }
   }
