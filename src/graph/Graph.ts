@@ -6,13 +6,13 @@
 
 import * as _ from 'lodash';
 
-import { CountryData } from '../data/DataSource';
+import { CountryData, RData } from '../data/DataSource';
 import { stats_t, getStats } from './stats';
 
 
 export default interface Graph {
   readonly displayName: string;
-  setRawData(rawData: CountryData): void;
+  setRawData(rawData: CountryData, rData: (RData | undefined)): void;
   calcStats(): void;
   render(divId: string): void;
 }
@@ -21,6 +21,7 @@ export class GraphBase {
   readonly displayName: string;
   // raw data
   protected rawData: (CountryData | null) = null;
+  protected rData: (RData | undefined) = undefined;
 
   // statistical data
   protected casesAveraging: number;
@@ -49,8 +50,9 @@ export class GraphBase {
     this.activeWindow = activeWindow;
   }
 
-  public setRawData(rawData: CountryData): void {
+  public setRawData(rawData: CountryData, rData: (RData | undefined)): void {
     this.rawData = rawData;
+    this.rData = rData;
   }
 
   public calcStats(): void {

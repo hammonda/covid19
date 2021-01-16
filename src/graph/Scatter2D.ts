@@ -28,7 +28,7 @@ export default class Scatter2D extends GraphBase implements Graph {
       return;
 
     const casesRange = this.getLogAxisRange(this.stats.activeMin, this.stats.activeMax, 2);
-    Plotly.newPlot(divId, [
+    const data = [
       {
         y: this.stats.r,
         x: this.stats.active,
@@ -66,7 +66,8 @@ export default class Scatter2D extends GraphBase implements Graph {
           dash: 'dot'
         }
       }
-    ], {
+    ];
+    Plotly.newPlot(divId, data, {
       width: 0.8 * window.innerWidth,
       height: 0.9 * window.innerHeight,
       autosize: true,
