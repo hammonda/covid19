@@ -15,7 +15,7 @@ export default class Scatter2D extends GraphBase implements Graph {
 
   constructor(casesAveraging: number, deathsAveraging: number,
     activeWindow: number) {
-    super('R vs Active Cases', casesAveraging, deathsAveraging, activeWindow);
+    super('R₀ vs Active Cases', casesAveraging, deathsAveraging, activeWindow);
     this.hoverTemplate = [
       '<b>%{customdata[0]}</b>',
       'New deaths: %{customdata[1]}',
@@ -34,7 +34,7 @@ export default class Scatter2D extends GraphBase implements Graph {
       {
         y: this.stats.r,
         x: this.stats.active,
-        name: 'R vs Active cases',
+        name: 'R₀ vs Active cases',
         customdata: this.customData,
         type: 'scatter',
         mode: 'lines+markers+text',
@@ -59,7 +59,7 @@ export default class Scatter2D extends GraphBase implements Graph {
       {
         x: [0, Math.pow(10, casesRange[1])],
         y: [1.0, 1.0],
-        name: 'R = 1',
+        name: 'R₀ = 1',
         mode: 'lines',
         line: {
           width: 1,
@@ -93,7 +93,7 @@ export default class Scatter2D extends GraphBase implements Graph {
       yaxis: {
         showline: true,
         dtick: 0.25,
-        title: 'R',
+        title: 'R₀',
         range: this.rRange(casesRange, 0.25),
       },
       clickmode: 'event+select'

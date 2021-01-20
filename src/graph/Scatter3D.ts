@@ -17,7 +17,7 @@ export default class Scatter3D extends GraphBase implements Graph {
 
   constructor(casesAveraging: number, deathsAveraging: number,
     activeWindow: number) {
-    super('Deaths vs R and Active Cases', casesAveraging, deathsAveraging, activeWindow);
+    super('Deaths vs R₀ and Active Cases', casesAveraging, deathsAveraging, activeWindow);
     this.hoverTemplate = [
       '<b>%{customdata[0]}</b>',
       'New deaths: %{customdata[1]}',
@@ -113,7 +113,7 @@ export default class Scatter3D extends GraphBase implements Graph {
       title: this.title,
       scene: {
         xaxis: {
-          title: 'R',
+          title: 'R₀',
           range: [0, 3.5],
         },
         yaxis: {
