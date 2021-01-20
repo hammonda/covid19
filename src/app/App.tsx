@@ -37,10 +37,9 @@ const App: React.FC<Props> = (props: Props) => {
   React.useEffect(() => {
     if (loaded) {
       const data = props.dataSource.getCountryData(countrySelected);
-      const rData = props.dataSource.getRData? props.dataSource.getRData(countrySelected) : undefined; 
       if (data) {
         _.each(props.graphs, (graph, i) => {
-          graph.setRawData(data, rData);
+          graph.setRawData(data);
           graph.calcStats();
           graph.render(`graph-${i}`);
         });

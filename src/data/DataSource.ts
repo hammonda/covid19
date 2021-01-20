@@ -12,7 +12,8 @@ export type CountryData = {
   readonly cases: readonly number[],
   readonly deaths: readonly number[],
   readonly cumCases?: readonly number[],
-  readonly cumDeaths: readonly number[]
+  readonly cumDeaths: readonly number[],
+  readonly rData?: RData
 };
 
 export type RData = {
@@ -26,6 +27,5 @@ export default interface DataSource {
   getStoreEntries(): IterableIterator<[string, CountryData]>;
   getCountryKeys(): IterableIterator<string>;
   getCountryData(countryKey: string): (CountryData | undefined);
-  getRData?(countryKey: string): (RData | undefined);
   load(): Promise<void>;
 }

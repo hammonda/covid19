@@ -4,6 +4,8 @@
 // @date 13 Nov 2020
 //
 
+import * as _ from 'lodash';
+
 import Graph, {GraphBase } from './Graph';
 
 const Plotly = require('plotly.js-dist');
@@ -47,12 +49,12 @@ export default class Scatter2D extends GraphBase implements Graph {
         },
         text: this.dateLabels,
         textposition: 'right',
-         hovertemplate: this.hoverTemplate,
-         hoverlabel: {
-           font: {
-             size: 11
-           }
-         }
+        hovertemplate: this.hoverTemplate,
+        hoverlabel: {
+          font: {
+            size: 11
+          }
+        }
       },
       {
         x: [0, Math.pow(10, casesRange[1])],
@@ -67,6 +69,7 @@ export default class Scatter2D extends GraphBase implements Graph {
         }
       }
     ];
+//    this.addRDataPlot(data);
     Plotly.newPlot(divId, data, {
       width: 0.8 * window.innerWidth,
       height: 0.9 * window.innerHeight,
@@ -97,6 +100,41 @@ export default class Scatter2D extends GraphBase implements Graph {
     },
     {
       displayModeBar: true
+    });
+  }
+
+  private addRDataPlot(data: any[]) {
+    if (!this.stats || !this.stats.rawData.rData)
+      return;
+
+    const active: number[] = [this.stats.active[0]];
+    let i = 0;
+    for (const d of this.stats.rawData.rData.dates) {
+      while (!this.stats.rawData.dates[i].isSame(d) &&
+             i < this.stats.rawData.dates.length) {
+        ++i;
+      }
+      active.push(...[this.stats.active[i],this.stats.active[i]]);
+    }
+
+    const rMin = this.stats.rawData.rData.rMin;
+    const rMax = this.stats.rawData.rData.rMax;
+    const r = _.map(rMax, (v, i) => 0.5 * (v + rMin[i]));
+
+    data.push({
+      x: active,
+      y: _.reduce(r, (prev: number[], curr) => prev.concat([curr, curr]), []),
+      name: 'GOV.UK R value',
+      type: 'scatter',
+      mode: 'lines+markers',
+      line: {
+        color: 'rgb(91,192,222)',
+        width: 1
+      },
+      marker: {
+        opacity: 0.3,
+        size: 10
+      }
     });
   }
 }

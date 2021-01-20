@@ -8,21 +8,19 @@ import axios from 'axios';
 import * as _ from 'lodash';
 import moment from 'moment';
 
-import DataSource, { RData } from './DataSource';
+import DataSource from './DataSource';
 import DataSourceImpl from './DataSourceImpl';
 
 type options_t = {[key: string]: string};
 
 export default class GovUK extends DataSourceImpl implements DataSource {
   private options: options_t;
-  private rData: RData | null;
   static readonly endpoint = 'https://api.coronavirus.data.gov.uk/v1/data';
   static readonly endpointExp = 'https://api.coronavirus.data.gov.uk/v2/data';
 
   constructor(options?: options_t) {
     super('GOV.UK');
     this.options = options || {areaType: 'overview'};
-    this.rData = null;
   }
 
   public async load(): Promise<void> {
@@ -37,7 +35,9 @@ export default class GovUK extends DataSourceImpl implements DataSource {
         }
       }
     })).data.data;
-    await this.loadR();
+    const rData = (await axios.get(GovUK.endpointExp +
+      '?areaType=overview&metric=transmissionRateMin&metric=transmissionRateMax&format=json')).data.body;
+
     _.remove(data as [{cases: number}], i => i.cases == 0);
     this.store.clear();
     this.store.set('United Kingdom', {
@@ -45,22 +45,12 @@ export default class GovUK extends DataSourceImpl implements DataSource {
       dates: _.map(data, i => moment(i.dates, 'YYYY-MM-DD')),
       cases: _.map(data, 'cases'),
       deaths: _.map(data, 'deaths'),
-      cumDeaths: _.map(data, 'cumDeaths')
+      cumDeaths: _.map(data, 'cumDeaths'),
+      rData: {
+        dates: _.map(rData, i => moment(i.date, 'YYYY-MM-DD')),
+        rMin: _.map(rData, 'transmissionRateMin'),
+        rMax: _.map(rData, 'transmissionRateMax')
+      }
     });
-  }
-
-  public getRData(countryKey: string): (RData | undefined) {
-    return (countryKey == 'United Kingdom' && this.rData) ? this.rData : undefined;
-  }
-
-  // https://coronavirus.data.gov.uk/details/download
-  private async loadR(): Promise<void> {
-    const data = (await axios.get(GovUK.endpointExp +
-      '?areaType=overview&metric=transmissionRateMin&metric=transmissionRateMax&format=json')).data.body;
-    this.rData = {
-      dates: _.map(data, i => moment(i.dates, 'YYYY-MM-DD')),
-      rMin: _.map(data, 'transmissionRateMin'),
-      rMax: _.map(data, 'transmissionRateMax')
-    }
   }
 }

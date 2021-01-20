@@ -39,16 +39,20 @@ export function getStats(raw: CountryData, casesAveraging: number,
   const cases = getRolling(raw.cases, casesAveraging, casesAveraging);
   const active = _.map(getRolling(cases, activeWindow, 1.0), i => i < 1 ? 0 : i);
   const rollingDeaths = getRolling(raw.deaths, deathsAveraging, deathsAveraging);
+  const r = [];
+  for (let i = 0; i < cases.length - activeWindow - 1; ++i) {
+    r.push(activeWindow * cases[i] / active[i + 1]);
+  }
   return {
     rawData: raw,
     cases: cases,
     active: active,
     rollingDeaths: rollingDeaths,
-    r: _.map(active, (v, i) => activeWindow * cases[i] / v),
+    r: r,
     activeMin: Math.min(...active),
     activeMax: Math.max(...active),
     rollingDeathsMin: Math.min(...rollingDeaths),
-    rollingDeathsMax: Math.min(...rollingDeaths)
+    rollingDeathsMax: Math.max(...rollingDeaths)
   }
 }
 
