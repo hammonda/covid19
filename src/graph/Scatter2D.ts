@@ -12,6 +12,7 @@ const Plotly = require('plotly.js-dist');
 
 export default class Scatter2D extends GraphBase implements Graph {
   private hoverTemplate: string;
+  private rHoverTemplate: string;
 
   constructor(casesAveraging: number, deathsAveraging: number,
     activeWindow: number) {
@@ -23,13 +24,18 @@ export default class Scatter2D extends GraphBase implements Graph {
       'Rolling average deaths: %{customdata[3]:.1f}',
       'Active cases: %{customdata[4]}',
       '<b>R: %{y:.3f}</b><extra></extra>'].join('<br>');
+    this.rHoverTemplate = [
+      '<b>%{customdata[0]}</b>',
+      'Min transmssion Rate: %{customdata[1]:.2f}',
+      'Max transmssion Rate: %{customdata[2]:.2f}',
+      '<b>Average: %{y:.2f}</b><extra></extra>'].join('<br>');
   }
 
   public render(divId: string): void {
     if (!this.stats)
       return;
 
-    const casesRange = this.getLogAxisRange(this.stats.activeMin, this.stats.activeMax, 2);
+    const casesRange = this.getLogAxisRange(this.stats.activeMin, this.stats.activeMax, 1.5);
     const data = [
       {
         y: this.stats.r,
@@ -69,7 +75,7 @@ export default class Scatter2D extends GraphBase implements Graph {
         }
       }
     ];
-//    this.addRDataPlot(data);
+    this.addRDataPlot(data);
     Plotly.newPlot(divId, data, {
       width: 0.8 * window.innerWidth,
       height: 0.9 * window.innerHeight,
@@ -93,7 +99,7 @@ export default class Scatter2D extends GraphBase implements Graph {
       yaxis: {
         showline: true,
         dtick: 0.25,
-        title: 'R₀',
+        title: 'R',
         range: this.rRange(casesRange, 0.25),
       },
       clickmode: 'event+select'
@@ -108,6 +114,7 @@ export default class Scatter2D extends GraphBase implements Graph {
       return;
 
     const active: number[] = [this.stats.active[0]];
+    const activePoints: number[] = [];
     let i = 0;
     for (const d of this.stats.rawData.rData.dates) {
       while (!this.stats.rawData.dates[i].isSame(d) &&
@@ -115,26 +122,48 @@ export default class Scatter2D extends GraphBase implements Graph {
         ++i;
       }
       active.push(...[this.stats.active[i],this.stats.active[i]]);
+      activePoints.push(this.stats.active[i]);
     }
 
     const rMin = this.stats.rawData.rData.rMin;
     const rMax = this.stats.rawData.rData.rMax;
-    const r = _.map(rMax, (v, i) => 0.5 * (v + rMin[i]));
+    const rAverage = _.map(rMax, (v, i) => 0.5 * (v + rMin[i]));
 
     data.push({
       x: active,
-      y: _.reduce(r, (prev: number[], curr) => prev.concat([curr, curr]), []),
-      name: 'GOV.UK R value',
+      y: _.reduce(rAverage, (prev: number[], curr) => prev.concat([curr, curr]), []),
+      name: this.stats.rawData.rData.displayName,
       type: 'scatter',
-      mode: 'lines+markers',
+      mode: 'lines',
       line: {
-        color: 'rgb(91,192,222)',
+        color: 'royalblue',
         width: 1
       },
+      legendgroup: 'r data',
+      hoverinfo:'skip'
+    });
+    data.push({
+      x: activePoints,
+      y: rAverage,
+      customdata: _.map(rMin, (v, i) => 
+        [this.stats?.rawData.rData?.dates[i].format('Do MMMM YYYY'), rMin[i], rMax[i]]),
+      type: 'scatter',
+      name: this.stats.rawData.rData.displayName,
+      mode: 'markers',
       marker: {
+        color: 'royalblue',
         opacity: 0.3,
         size: 10
-      }
-    });
+      },
+      textposition: 'right',
+      hovertemplate: this.rHoverTemplate,
+      hoverlabel: {
+        font: {
+          size: 11
+        }
+      },
+      legendgroup: 'r data',
+      showlegend: false
+    })
   }
 }

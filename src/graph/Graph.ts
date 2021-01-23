@@ -112,18 +112,16 @@ export class GraphBase {
 
   protected minLogAxis(minValue: number): number {
     if (minValue > 0) {
-    const log = Math.log10(minValue);
-    const power10 = Math.trunc(log);
-    return power10 + Math.log10(Math.trunc(Math.pow(10, (log - power10))));
+      const base = Math.pow(10, Math.trunc(Math.log10(minValue)));
+      return Math.log10(base * Math.floor(minValue / base));
     } else {
       return 1.0;
     }
   }
 
   protected maxLogAxis(maxValue: number): number {
-    const log = Math.log10(maxValue);
-    const power10 = Math.trunc(log);
-    return (log - power10) < 0.69897 ? (power10 + 0.69897) : (power10 + 1);
+    const base = Math.pow(10, Math.trunc(Math.log10(maxValue)));
+    return Math.log10(base * ((maxValue / base) + 0.5));
   }
 
   protected minMaxInActiveCasesRange(logCasesRange: [number, number],
@@ -150,6 +148,7 @@ export class GraphBase {
     if (range) {
       range[0] = Math.trunc(range[0]/dtick)*dtick;
       range[1] = (1 + Math.trunc(range[1]/dtick))*dtick;
+      range[1] = Math.min(range[1], 5);
       return range;
     } else {
       return null;
