@@ -17,6 +17,7 @@ export type CountryData = {
 };
 
 export type RData = {
+  readonly displayName: string,
   readonly dates: readonly moment.Moment[],
   readonly rMin: readonly number[],
   readonly rMax: readonly number[]
