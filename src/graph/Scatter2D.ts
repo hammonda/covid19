@@ -54,11 +54,14 @@ export default class Scatter2D extends GraphBase implements Graph {
           opacity: 0.3
         },
         text: this.dateLabels,
-        textposition: 'right',
+        textposition: 'left',
+        textfont: {
+          size: 8
+        },
         hovertemplate: this.hoverTemplate,
         hoverlabel: {
           font: {
-            size: 11
+            size: 10
           }
         }
       },
@@ -78,16 +81,23 @@ export default class Scatter2D extends GraphBase implements Graph {
     this.addRDataPlot(data);
     Plotly.newPlot(divId, data, {
       width: document.getElementById("graph-root")?.offsetWidth,
-      height: 0.9 * window.innerHeight,
+      height: 0.75 * window.innerHeight,
       autosize: true,
       title: this.title,
+      titlefont: {
+        size: 12
+      },
       margin: {
-        r: 0,
-        t: 100
+        l: 35,
+        r: 20,
+        t: 120
       },
       legend: {
-        y: 0.95,
-        x: 0.8
+        y: 1.05,
+        x: 0.6
+      },
+      font: {
+        size: 10
       },
       showlegend: true,
       xaxis: {
@@ -154,7 +164,7 @@ export default class Scatter2D extends GraphBase implements Graph {
       marker: {
         color: 'royalblue',
         opacity: 0.3,
-        size: 10
+        size: 5
       },
       textposition: 'right',
       hovertemplate: this.rHoverTemplate,

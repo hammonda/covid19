@@ -48,7 +48,7 @@ export default class Scatter3D extends GraphBase implements Graph {
         mode: 'lines+markers+text',
         line: {
           color: this.colors,
-          width: 2,
+          width: 1,
           shape: 'spline'
         },
         marker: {
@@ -56,7 +56,10 @@ export default class Scatter3D extends GraphBase implements Graph {
           opacity: 0.25
         },
         text: this.dateLabels,
-        textposition: 'right',
+        textposition: 'left',
+        textfont: {
+          size: 8
+        },
         hovertemplate: this.hoverTemplate,
         hoverlabel: {
           font: {
@@ -74,7 +77,7 @@ export default class Scatter3D extends GraphBase implements Graph {
         mode: 'markers+text',
         marker: {
           color: 'blue',
-          size: [10],
+          size: [5],
           opacity: 0.5
         },
         text: this.dateLabels,
@@ -96,7 +99,7 @@ export default class Scatter3D extends GraphBase implements Graph {
         name: 'linear projection',
         marker: {
           color: 'orange',
-          size: [10],
+          size: [5],
           opacity: 0.25
         },
         visible: 'legendonly',
@@ -109,20 +112,41 @@ export default class Scatter3D extends GraphBase implements Graph {
       }
     ], {
       width: document.getElementById("graph-root")?.offsetWidth,
-      height: 0.9 * window.innerHeight,
+      height: 0.75 * window.innerHeight,
       title: this.title,
+      titlefont: {
+        size: 12
+      },
+      font: {
+        size: 10
+      },
       scene: {
         xaxis: {
-          title: 'R₀',
-          range: [0, 3.5],
+          title: {
+            text: 'R₀',
+            font: {
+              size: 8
+            }
+          },
+          range: [0, 3.5]
         },
         yaxis: {
-          title: `Active cases (${this.activeWindow} day rolling sum of new cases)`,
+          title: {
+            text: 'Active cases', //`Active cases (${this.activeWindow} day rolling sum of new cases)`,
+            font: {
+              size: 8
+            }
+          },
           type: 'log',
           range: casesRange
         },
         zaxis: {
-          title: 'Deaths (daily)',
+          title: {
+            text: 'Deaths (daily)',
+            font: {
+              size: 8
+            }
+          },
           type: 'log',
           range: this.deathsRange(casesRange)
         },
@@ -132,15 +156,17 @@ export default class Scatter3D extends GraphBase implements Graph {
           center: {x: 0, y: 0, z: 0}
         },
         aspectmode: 'manual',
-        aspectratio: {x: 1, y: 1, z: 1}
+        aspectratio: {x: 0.7, y: 0.7, z: 1.25}
       },
       margin: {
         r: 0,
-        t: 100
+        l: 0,
+        b: 0,
+        t: 120
       },
       legend: {
-        y: 0.9,
-        x: 0.55
+        y: 1.05,
+        x: 0.25
       },
       showlegend: true
     },

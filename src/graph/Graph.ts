@@ -79,7 +79,7 @@ export class GraphBase {
   }
 
   protected setMarkerSize(stats: stats_t): void {
-    this.markerSize = _.map(stats.active, (v, i) => i == 0 ? 20 : 10);
+    this.markerSize = _.map(stats.active, (v, i) => i == 0 ? 10 : 5);
   }
 
   protected setCustomData(stats: stats_t): void {
