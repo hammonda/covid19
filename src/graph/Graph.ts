@@ -8,6 +8,7 @@ import * as _ from 'lodash';
 
 import { CountryData } from '../data/DataSource';
 import { stats_t, getStats } from './stats';
+import ViewPort from '../app/ViewPort';
 
 
 export default interface Graph {
@@ -31,7 +32,7 @@ export class GraphBase {
   // graph data
   protected colors: Array<string> = [];
   protected dateLabels: Array<string> = [];
-  protected markerSize: Array<number> = [];
+  protected markerSizes: Array<number> = [];
   protected customData: Array<[
     string, // date
     number, // deaths
@@ -41,12 +42,52 @@ export class GraphBase {
   ]> = [];
   protected title: string = '';
 
+  // Font sizes
+  protected fontSize: {
+    base: number,
+    title: number,
+    text: number,
+    hover: number,
+    axisTitle: number
+  };
+
+  // Marker sizes
+  protected markerSize: {
+    small: number,
+    large: number
+  };
+
   constructor(displayName: string, casesAveraging: number, deathsAveraging: number,
-    activeWindow: number) {
+    activeWindow: number, viewPort: ViewPort) {
     this.displayName = displayName;
     this.casesAveraging = casesAveraging;
     this.deathsAveraging = deathsAveraging;
     this.activeWindow = activeWindow;
+    if (viewPort == ViewPort.xSmall) {
+      this.fontSize = {
+        base: 10,
+        title: 12,
+        text: 8,
+        hover: 10,
+        axisTitle: 8
+      };
+      this.markerSize = {
+        small: 5,
+        large: 10
+      };
+    } else {
+      this.fontSize = {
+        base: 12,
+        title: 17,
+        text: 12,
+        hover: 11,
+        axisTitle: 14
+      };
+      this.markerSize = {
+        small: 10,
+        large: 20
+      };
+    }
   }
 
   public setRawData(rawData: CountryData): void {
@@ -79,7 +120,8 @@ export class GraphBase {
   }
 
   protected setMarkerSize(stats: stats_t): void {
-    this.markerSize = _.map(stats.active, (v, i) => i == 0 ? 20 : 10);
+    this.markerSizes = _.map(stats.active, (v, i) =>
+      i == 0 ? this.markerSize.large : this.markerSize.small);
   }
 
   protected setCustomData(stats: stats_t): void {

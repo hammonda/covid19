@@ -7,6 +7,7 @@
 import * as _ from 'lodash';
 
 import Graph, {GraphBase } from './Graph';
+import ViewPort from '../app/ViewPort';
 
 const Plotly = require('plotly.js-dist');
 
@@ -14,9 +15,13 @@ export default class Scatter2D extends GraphBase implements Graph {
   private hoverTemplate: string;
   private rHoverTemplate: string;
 
+  private height: number;
+  private margin: {r: number, t: number, l?: number};
+  private legend: {x: number, y: number};
+
   constructor(casesAveraging: number, deathsAveraging: number,
-    activeWindow: number) {
-    super('R₀ vs Active Cases', casesAveraging, deathsAveraging, activeWindow);
+    activeWindow: number, viewPort: ViewPort) {
+    super('R₀ vs Active Cases', casesAveraging, deathsAveraging, activeWindow, viewPort);
     this.hoverTemplate = [
       '<b>%{customdata[0]}</b>',
       'New deaths: %{customdata[1]}',
@@ -29,6 +34,15 @@ export default class Scatter2D extends GraphBase implements Graph {
       'Min transmssion Rate: %{customdata[1]:.2f}',
       'Max transmssion Rate: %{customdata[2]:.2f}',
       '<b>Average: %{y:.2f}</b><extra></extra>'].join('<br>');
+    if (viewPort == ViewPort.xSmall) {
+      this.height = 0.75;
+      this.margin = {l: 35, r: 20, t: 120};
+      this.legend = {x: 0.6, y: 1.05};
+    } else {
+      this.height = 0.9;
+      this.margin = {r: 0, t: 100};
+      this.legend = {x: 0.8, y: 0.95};
+    }
   }
 
   public render(divId: string): void {
@@ -50,15 +64,18 @@ export default class Scatter2D extends GraphBase implements Graph {
         },
         marker: {
           color: this.colors,
-          size: this.markerSize,
+          size: this.markerSizes,
           opacity: 0.3
         },
         text: this.dateLabels,
-        textposition: 'right',
+        textposition: 'left',
+        textfont: {
+          size: this.fontSize.text
+        },
         hovertemplate: this.hoverTemplate,
         hoverlabel: {
           font: {
-            size: 11
+            size: this.fontSize.hover
           }
         }
       },
@@ -78,16 +95,16 @@ export default class Scatter2D extends GraphBase implements Graph {
     this.addRDataPlot(data);
     Plotly.newPlot(divId, data, {
       width: document.getElementById("graph-root")?.offsetWidth,
-      height: 0.9 * window.innerHeight,
+      height: this.height * window.innerHeight,
       autosize: true,
       title: this.title,
-      margin: {
-        r: 0,
-        t: 100
+      titlefont: {
+        size: this.fontSize.title
       },
-      legend: {
-        y: 0.95,
-        x: 0.8
+      margin: this.margin,
+      legend: this.legend,
+      font: {
+        size: this.fontSize.base
       },
       showlegend: true,
       xaxis: {
@@ -146,7 +163,7 @@ export default class Scatter2D extends GraphBase implements Graph {
     data.push({
       x: activePoints,
       y: rAverage,
-      customdata: _.map(rMin, (v, i) => 
+      customdata: _.map(rMin, (v, i) =>
         [this.stats?.rawData.rData?.dates[i].format('Do MMMM YYYY'), rMin[i], rMax[i]]),
       type: 'scatter',
       name: this.stats.rawData.rData.displayName,
@@ -154,13 +171,13 @@ export default class Scatter2D extends GraphBase implements Graph {
       marker: {
         color: 'royalblue',
         opacity: 0.3,
-        size: 10
+        size: this.markerSize.small
       },
       textposition: 'right',
       hovertemplate: this.rHoverTemplate,
       hoverlabel: {
         font: {
-          size: 11
+          size: this.fontSize.hover
         }
       },
       legendgroup: 'r data',

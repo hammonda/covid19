@@ -10,6 +10,7 @@ import * as _ from 'lodash';
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import App from './app/App';
+import ViewPort from './app/ViewPort';
 
 import GovUK from './data/GovUK';
 import JohnHopkins from './data/JohnHopkins';
@@ -26,8 +27,9 @@ const dataSource = new MultipleSource(new JohnHopkins(), new GovUK());
 const averaging = 7;
 const windowing = 14;
 const graphs = new Array<Graph>();
-graphs.push(new Scatter2D(averaging, averaging, windowing));
-graphs.push(new Scatter3D(averaging, averaging, windowing));
+const viewPort = window.innerWidth < 576 ? ViewPort.xSmall : ViewPort.extraExtraLarge;
+graphs.push(new Scatter2D(averaging, averaging, windowing, viewPort));
+graphs.push(new Scatter3D(averaging, averaging, windowing, viewPort));
 const graphDisplayNames = _.map(graphs, graph => graph.displayName);
 
 // Create and render the App

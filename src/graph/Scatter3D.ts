@@ -8,6 +8,7 @@ import $ from 'jquery';
 
 import { projectLinear } from './stats';
 import Graph, { GraphBase } from './Graph';
+import ViewPort from '../app/ViewPort';
 
 const Plotly = require('plotly.js-dist');
 
@@ -15,9 +16,14 @@ export default class Scatter3D extends GraphBase implements Graph {
   private hoverTemplate: string;
   private projectTemplate: string;
 
+  private height: number;
+  private margin: {r: number, t: number, l?: number};
+  private legend: {x: number, y: number};
+  private aspectRatio: {x: number, y: number, z: number};
+
   constructor(casesAveraging: number, deathsAveraging: number,
-    activeWindow: number) {
-    super('Deaths vs R₀ and Active Cases', casesAveraging, deathsAveraging, activeWindow);
+    activeWindow: number, viewPort: ViewPort) {
+    super('Deaths vs R₀ and Active Cases', casesAveraging, deathsAveraging, activeWindow, viewPort);
     this.hoverTemplate = [
       '<b>%{customdata[0]}</b>',
       'New deaths: %{customdata[1]}',
@@ -30,6 +36,17 @@ export default class Scatter3D extends GraphBase implements Graph {
       'Active cases: %{y}',
       '<b>R: %{x:.3f}</b><extra></extra>'
     ].join('<br>');
+    if (viewPort == ViewPort.xSmall) {
+      this.height = 0.75;
+      this.margin = {l: 0, r: 0, t: 120};
+      this.legend = {x: 0.25, y: 1.05};
+      this.aspectRatio = {x: 0.7, y: 0.7, z: 1.25};
+    } else {
+      this.height = 0.9;
+      this.margin = {r: 0, t: 100};
+      this.legend = {x: 0.55, y: 0.9};
+      this.aspectRatio = {x: 1.0, y: 1.0, z: 1.0};
+    }
   }
 
   public render(divId: string): void {
@@ -48,11 +65,11 @@ export default class Scatter3D extends GraphBase implements Graph {
         mode: 'lines+markers+text',
         line: {
           color: this.colors,
-          width: 2,
+          width: 1,
           shape: 'spline'
         },
         marker: {
-          size: this.markerSize,
+          size: this.markerSizes,
           opacity: 0.25
         },
         text: this.dateLabels,
@@ -60,7 +77,7 @@ export default class Scatter3D extends GraphBase implements Graph {
         hovertemplate: this.hoverTemplate,
         hoverlabel: {
           font: {
-            size: 11
+            size: this.fontSize.hover
           }
         }
       },
@@ -74,15 +91,18 @@ export default class Scatter3D extends GraphBase implements Graph {
         mode: 'markers+text',
         marker: {
           color: 'blue',
-          size: [10],
+          size: [this.markerSize.small],
           opacity: 0.5
         },
         text: this.dateLabels,
         textposition: 'left',
+        textfont: {
+          size: this.fontSize.text
+        },
         hovertemplate: this.hoverTemplate,
         hoverlabel: {
           font: {
-            size: 11
+            size: this.fontSize.hover
           }
         },
         visible: 'legendonly',
@@ -96,33 +116,51 @@ export default class Scatter3D extends GraphBase implements Graph {
         name: 'linear projection',
         marker: {
           color: 'orange',
-          size: [10],
+          size: [this.markerSize.small],
           opacity: 0.25
         },
         visible: 'legendonly',
         hovertemplate: this.projectTemplate,
         hoverlabel: {
           font: {
-            size: 11
+            size: this.fontSize.hover
           }
         }
       }
     ], {
       width: document.getElementById("graph-root")?.offsetWidth,
-      height: 0.9 * window.innerHeight,
+      height: this.height * window.innerHeight,
       title: this.title,
+      titlefont: {
+        size: this.fontSize.title
+      },
       scene: {
         xaxis: {
-          title: 'R₀',
+          title: {
+            text: 'R₀',
+            font: {
+              size: this.fontSize.axisTitle
+            }
+          },
           range: [0, 3.5],
         },
         yaxis: {
-          title: `Active cases (${this.activeWindow} day rolling sum of new cases)`,
+          title: {
+            text: 'Active cases',
+            font: {
+              size: this.fontSize.axisTitle
+            }
+          },
           type: 'log',
           range: casesRange
         },
         zaxis: {
-          title: 'Deaths (daily)',
+          title: {
+            text: 'Deaths (daily)',
+            font: {
+              size: this.fontSize.axisTitle
+            }
+          },
           type: 'log',
           range: this.deathsRange(casesRange)
         },
@@ -132,15 +170,12 @@ export default class Scatter3D extends GraphBase implements Graph {
           center: {x: 0, y: 0, z: 0}
         },
         aspectmode: 'manual',
-        aspectratio: {x: 1, y: 1, z: 1}
+        aspectratio: this.aspectRatio
       },
-      margin: {
-        r: 0,
-        t: 100
-      },
-      legend: {
-        y: 0.9,
-        x: 0.55
+      margin: this.margin,
+      legend: this.legend,
+      font: {
+        size: this.fontSize.base
       },
       showlegend: true
     },
