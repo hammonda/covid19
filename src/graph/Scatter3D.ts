@@ -17,7 +17,7 @@ export default class Scatter3D extends GraphBase implements Graph {
   private projectTemplate: string;
 
   private height: number;
-  private margin: {r: number, t: number, l?: number};
+  private margin: {r: number, t: number, l?: number, b?: number};
   private legend: {x: number, y: number};
   private aspectRatio: {x: number, y: number, z: number};
 
@@ -38,7 +38,7 @@ export default class Scatter3D extends GraphBase implements Graph {
     ].join('<br>');
     if (viewPort == ViewPort.xSmall) {
       this.height = 0.75;
-      this.margin = {l: 0, r: 0, t: 120};
+      this.margin = {l: 0, r: 0, t: 120, b: 0};
       this.legend = {x: 0.25, y: 1.05};
       this.aspectRatio = {x: 0.7, y: 0.7, z: 1.25};
     } else {
