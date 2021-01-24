@@ -77,7 +77,7 @@ export default class Scatter2D extends GraphBase implements Graph {
     ];
     this.addRDataPlot(data);
     Plotly.newPlot(divId, data, {
-      width: 0.8 * window.innerWidth,
+      width: document.getElementById("graph-root")?.offsetWidth,
       height: 0.9 * window.innerHeight,
       autosize: true,
       title: this.title,
@@ -105,7 +105,8 @@ export default class Scatter2D extends GraphBase implements Graph {
       clickmode: 'event+select'
     },
     {
-      displayModeBar: true
+      displayModeBar: true,
+      modeBarButtonsToRemove: ['lasso2d', 'select2d', 'toggleSpikelines', 'hoverClosestCartesian', 'hoverCompareCartesian']
     });
   }
 

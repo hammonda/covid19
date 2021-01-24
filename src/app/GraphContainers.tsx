@@ -9,7 +9,7 @@ import * as React from "react";
 
 const GraphContainers: React.FC<{size: number}> = (props) => {
   return (
-    <div className='col-10'>
+    <div id="graph-root" className='col-lg-10'>
     {_.map(_.range(props.size), i =>
       <div key={i} id={`graph-${i}`} className='d-none'/> )}
     </div>

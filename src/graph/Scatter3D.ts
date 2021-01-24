@@ -108,7 +108,7 @@ export default class Scatter3D extends GraphBase implements Graph {
         }
       }
     ], {
-      width: 0.8 * window.innerWidth,
+      width: document.getElementById("graph-root")?.offsetWidth,
       height: 0.9 * window.innerHeight,
       title: this.title,
       scene: {
@@ -145,7 +145,8 @@ export default class Scatter3D extends GraphBase implements Graph {
       showlegend: true
     },
     {
-      displayModeBar: true
+      displayModeBar: true,
+      modeBarButtonsToRemove: ['lasso2d', 'select2d', 'toggleSpikelines', 'hoverClosestCartesian', 'hoverCompareCartesian']
     });
     // Plotly js hack to fix bug in legend display
     $(`#${divId} g .legendlines`).addClass('d-none');

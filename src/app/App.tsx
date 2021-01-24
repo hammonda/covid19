@@ -71,7 +71,7 @@ const App: React.FC<Props> = (props: Props) => {
       <Loading height={windowSize.height}/> :
       <div className='row no-gutters'>
         <GraphContainers size={props.graphs.length} />
-        <div className="col-2 pt-5 pr-1">
+        <div className="col-lg-2 pt-5 pr-1">
           <table>
             <tbody>
               <Select title="Country"
