@@ -54,6 +54,7 @@ const App: React.FC<Props> = (props: Props) => {
       for (const i in props.graphs) {
         $(`#graph-${i}`).addClass('d-none');
       }
+      $(`#graph-${props.graphs.length}`).addClass('d-none');
       $(`#graph-${graphIndex}`).removeClass('d-none');
     }
   }, [loaded, graphIndex]);

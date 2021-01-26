@@ -53,6 +53,8 @@ export default class Scatter3D extends GraphBase implements Graph {
     if (!this.stats)
       return;
 
+    const height = this.height * window.innerHeight;
+
     const casesRange = this.getLogAxisRange(this.stats.activeMin, this.stats.activeMax, 2);
     Plotly.newPlot(divId, [
       {
@@ -181,7 +183,10 @@ export default class Scatter3D extends GraphBase implements Graph {
     },
     {
       displayModeBar: true,
-      modeBarButtonsToRemove: ['lasso2d', 'select2d', 'toggleSpikelines', 'hoverClosestCartesian', 'hoverCompareCartesian']
+      modeBarButtonsToRemove: [
+        'lasso2d', 'select2d', 'toggleSpikelines', 'hoverClosestCartesian',
+        'hoverCompareCartesian'
+      ]
     });
     // Plotly js hack to fix bug in legend display
     $(`#${divId} g .legendlines`).addClass('d-none');

@@ -31,8 +31,8 @@ export default class Scatter2D extends GraphBase implements Graph {
       '<b>R: %{y:.3f}</b><extra></extra>'].join('<br>');
     this.rHoverTemplate = [
       '<b>%{customdata[0]}</b>',
-      'Min transmssion Rate: %{customdata[1]:.2f}',
-      'Max transmssion Rate: %{customdata[2]:.2f}',
+      'Min transmission Rate: %{customdata[1]:.2f}',
+      'Max transmission Rate: %{customdata[2]:.2f}',
       '<b>Average: %{y:.2f}</b><extra></extra>'].join('<br>');
     if (viewPort == ViewPort.xSmall) {
       this.height = 0.75;
@@ -48,6 +48,8 @@ export default class Scatter2D extends GraphBase implements Graph {
   public render(divId: string): void {
     if (!this.stats)
       return;
+
+    const height = this.height * window.innerHeight;
 
     const casesRange = this.getLogAxisRange(this.stats.activeMin, this.stats.activeMax, 1.5);
     const data = [
@@ -94,8 +96,8 @@ export default class Scatter2D extends GraphBase implements Graph {
     ];
     this.addRDataPlot(data);
     Plotly.newPlot(divId, data, {
-      width: document.getElementById("graph-root")?.offsetWidth,
-      height: this.height * window.innerHeight,
+      width: document.getElementById('graph-root')?.offsetWidth,
+      height: height,
       autosize: true,
       title: this.title,
       titlefont: {
@@ -123,7 +125,10 @@ export default class Scatter2D extends GraphBase implements Graph {
     },
     {
       displayModeBar: true,
-      modeBarButtonsToRemove: ['lasso2d', 'select2d', 'toggleSpikelines', 'hoverClosestCartesian', 'hoverCompareCartesian']
+      modeBarButtonsToRemove: [
+        'lasso2d', 'select2d', 'toggleSpikelines', 'hoverClosestCartesian',
+        'hoverCompareCartesian'
+      ]
     });
   }
 
