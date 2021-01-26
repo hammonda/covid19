@@ -52,6 +52,16 @@ export default class Scatter2D extends GraphBase implements Graph {
     const height = this.height * window.innerHeight;
 
     const casesRange = this.getLogAxisRange(this.stats.activeMin, this.stats.activeMax, 1.5);
+    const rRange = this.rRange(casesRange, 0.25);
+    if (this.stats.defaultView) {
+      casesRange[0] = this.stats.defaultView?.casesMin || casesRange[0];
+      casesRange[1] = this.stats.defaultView?.casesMax || casesRange[1];
+      if (rRange) {
+        rRange[0] = this.stats.defaultView?.RMin || rRange[0];
+        rRange[1] = this.stats.defaultView?.RMax || rRange[1];
+      }
+    }
+
     const data = [
       {
         y: this.stats.r,
@@ -119,7 +129,7 @@ export default class Scatter2D extends GraphBase implements Graph {
         showline: true,
         dtick: 0.25,
         title: 'R',
-        range: this.rRange(casesRange, 0.25),
+        range: rRange,
       },
       clickmode: 'event+select'
     },
