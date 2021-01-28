@@ -150,8 +150,8 @@ export default class Scatter2D extends GraphBase implements Graph {
     const activePoints: number[] = [];
     let i = 0;
     for (const d of this.stats.rawData.rData.dates) {
-      while (!this.stats.rawData.dates[i].isSame(d) &&
-             i < this.stats.rawData.dates.length) {
+      while (i < this.stats.rawData.dates.length &&
+            !this.stats.rawData.dates[i].isSame(d)) {
         ++i;
       }
       active.push(...[this.stats.active[i],this.stats.active[i]]);
