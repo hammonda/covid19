@@ -1,4 +1,4 @@
-# UK COVID-19 3D graphical visualization
+# UK COVID-19 graphical visualization
 
 ```
 $ npm i
