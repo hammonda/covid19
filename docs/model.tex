@@ -1,0 +1,40 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[left=2.0cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\newenvironment{packed_enum}{
+\begin{itemize}
+  \setlength{\topsep}{0pt}
+  \setlength{\itemsep}{0pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}
+  \setlength{\partopsep}{0pt}
+}{\end{itemize}}
+\begin{document}
+\section*{Simple model for $\textrm{R}_{0}$}
+\begin{eqnarray*}
+\textrm{j}(\textrm{t})&=&\int_{0}^{\infty}\textrm{A}(\tau)\textrm{j}(\textrm{t}-\tau)d\tau \\
+\textrm{R}_{0}&=&\int_{0}^{\infty}\textrm{A}(\tau)d\tau
+\end{eqnarray*}
+Where
+\begin{packed_enum}
+\item j(t) is the number of new infections at time t
+\item A($\tau$) is the rate an infected person infects a healthy person at time $\tau$ after infection
+\item $\textrm{R}_{0}$ is the total number of new infections resulting from an infected person
+\end{packed_enum}
+If we assume the infection rate is constant for a number of consecutive days (w) following infection then
+\begin{eqnarray*}
+\textrm{j}(\textrm{t})&=&\textrm{A}(\textrm{t})\int_{0}^{\textrm{w}}\textrm{j}(\textrm{t}-\tau)d\tau \\
+\textrm{R}_{0}(\textrm{t})&=&\textrm{w}\:\textrm{A}(\textrm{t})
+\end{eqnarray*}
+So
+\begin{equation*}
+\textrm{R}_{0}(\textrm{t})=\textrm{w}\:\frac{\textrm{j}(\textrm{t})}{\int_{0}^{\textrm{w}}\textrm{j}(\textrm{t}-\tau)d\tau}
+\end{equation*}
+Approximated as
+\begin{eqnarray*}
+\textrm{R}_{0}(\textrm{t})&=&\textrm{w}\:\frac{\textrm{j}(\textrm{t})}{\textrm{s}(\textrm{t})} \\
+\textrm{s}(\textrm{t})&=&\sum_{\tau=0}^{\tau=\textrm{w}}\textrm{j}(\textrm{t}-\tau)
+\end{eqnarray*}
+\end{document}
