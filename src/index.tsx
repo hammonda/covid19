@@ -28,8 +28,8 @@ const averaging = 7;
 const windowing = 14;
 const graphs = new Array<Graph>();
 const viewPort = window.innerWidth < 576 ? ViewPort.xSmall : ViewPort.extraExtraLarge;
-graphs.push(new Scatter2D(averaging, averaging, windowing, viewPort));
-graphs.push(new Scatter3D(averaging, averaging, windowing, viewPort));
+graphs.push(new Scatter2D(dataSource, averaging, averaging, windowing, viewPort));
+graphs.push(new Scatter3D(dataSource, averaging, averaging, windowing, viewPort));
 const graphDisplayNames = _.map(graphs, graph => graph.displayName);
 
 // Create and render the App

@@ -36,14 +36,10 @@ const App: React.FC<Props> = (props: Props) => {
 
   React.useEffect(() => {
     if (loaded) {
-      const data = props.dataSource.getCountryData(countrySelected);
-      if (data) {
-        _.each(props.graphs, (graph, i) => {
-          graph.setRawData(data);
-          graph.calcStats();
-          graph.render(`graph-${i}`);
-        });
-      }
+      _.each(props.graphs, (graph, i) => {
+        graph.setCountry(countrySelected);
+        graph.render(`graph-${i}`);
+      });
     }
   }, [loaded, /*windowSize,*/ countrySelected]);
 

@@ -6,6 +6,7 @@
 
 import $ from 'jquery';
 
+import DataSource from '../data/DataSource';
 import { projectLinear } from './stats';
 import Graph, { GraphBase } from './Graph';
 import ViewPort from '../app/ViewPort';
@@ -21,14 +22,15 @@ export default class Scatter3D extends GraphBase implements Graph {
   private legend: {x: number, y: number};
   private aspectRatio: {x: number, y: number, z: number};
 
-  constructor(casesAveraging: number, deathsAveraging: number,
-    activeWindow: number, viewPort: ViewPort) {
-    super('Deaths vs R₀ and Active Cases', casesAveraging, deathsAveraging, activeWindow, viewPort);
+  constructor(dataSource: DataSource, casesAveraging: number,
+    deathsAveraging: number, activeWindow: number, viewPort: ViewPort) {
+    super('Deaths vs R₀ and Active Cases', dataSource, casesAveraging,
+      deathsAveraging, activeWindow, viewPort);
     this.hoverTemplate = [
       '<b>%{customdata[0]}</b>',
       'New deaths: %{customdata[1]}',
       'New cases: %{customdata[2]}',
-      'Rolling average deaths: %{customdata[3]:.1f}',
+      'Rolling average deaths: %{customdata[3]}',
       'Active cases: %{customdata[4]}',
       '<b>R: %{x:.3f}</b><extra></extra>'].join('<br>');
     this.projectTemplate = [

@@ -1,0 +1,36 @@
+{
+  "Chile":{
+    "casesMin":15000,
+    "RMax":2.0
+  },
+  "Egypt":{
+    "casesMin":1000,
+    "RMax":1.75
+  },
+  "Germany":{
+    "casesMin":4000,
+    "RMax":2.0
+  },
+  "Japan":{
+    "casesMin":500
+  },
+  "Korea, South":{
+    "RMax":3.5
+  },
+  "Russia":{
+    "casesMin":60000,
+    "RMax":1.75
+  },
+  "Switzerland":{
+    "casesMin":200,
+    "RMax":2.5
+  },
+  "United Kingdom":{
+    "casesMin":8000,
+    "RMax":2.25
+  },
+  "US":{
+    "casesMin":200000,
+    "RMax":1.5
+  }
+}

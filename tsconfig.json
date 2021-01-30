@@ -5,6 +5,7 @@
     "downlevelIteration": true,
     "importHelpers": true,
     "moduleResolution": "node",
+    "resolveJsonModule": true,
     "outDir": "./lib",
     "jsx": "react"
   },

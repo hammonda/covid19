@@ -6,7 +6,8 @@
 
 import * as _ from 'lodash';
 
-import Graph, {GraphBase } from './Graph';
+import DataSource from '../data/DataSource';
+import Graph, {GraphBase} from './Graph';
 import ViewPort from '../app/ViewPort';
 
 const Plotly = require('plotly.js-dist');
@@ -19,14 +20,14 @@ export default class Scatter2D extends GraphBase implements Graph {
   private margin: {r: number, t: number, l?: number};
   private legend: {x: number, y: number};
 
-  constructor(casesAveraging: number, deathsAveraging: number,
-    activeWindow: number, viewPort: ViewPort) {
-    super('R₀ vs Active Cases', casesAveraging, deathsAveraging, activeWindow, viewPort);
+  constructor(dataSource: DataSource, casesAveraging: number,
+    deathsAveraging: number, activeWindow: number, viewPort: ViewPort) {
+    super('R₀ vs Active Cases', dataSource, casesAveraging, deathsAveraging, activeWindow, viewPort);
     this.hoverTemplate = [
       '<b>%{customdata[0]}</b>',
       'New deaths: %{customdata[1]}',
       'New cases: %{customdata[2]}',
-      'Rolling average deaths: %{customdata[3]:.1f}',
+      'Rolling average deaths: %{customdata[3]}',
       'Active cases: %{customdata[4]}',
       '<b>R: %{y:.3f}</b><extra></extra>'].join('<br>');
     this.rHoverTemplate = [

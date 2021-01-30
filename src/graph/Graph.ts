@@ -6,14 +6,14 @@
 
 import * as _ from 'lodash';
 
-import { CountryData } from '../data/DataSource';
+import DataSource, { CountryData } from '../data/DataSource';
 import { stats_t, getStats } from './stats';
 import ViewPort from '../app/ViewPort';
 
 
 export default interface Graph {
   readonly displayName: string;
-  setRawData(rawData: CountryData): void;
+  setCountry(country: string): void;
   calcStats(): void;
   render(divId: string): void;
 }
@@ -21,6 +21,7 @@ export default interface Graph {
 export class GraphBase {
   readonly displayName: string;
   // raw data
+  protected dataSource: DataSource;
   protected rawData: (CountryData | null) = null;
 
   // statistical data
@@ -35,9 +36,9 @@ export class GraphBase {
   protected markerSizes: Array<number> = [];
   protected customData: Array<[
     string, // date
-    number, // deaths
+    string, // deaths
     string, // cases
-    number, // rolling deaths
+    string, // rolling deaths
     string  // active
   ]> = [];
   protected title: string = '';
@@ -57,9 +58,10 @@ export class GraphBase {
     large: number
   };
 
-  constructor(displayName: string, casesAveraging: number, deathsAveraging: number,
-    activeWindow: number, viewPort: ViewPort) {
+  constructor(displayName: string, dataSource: DataSource, casesAveraging: number,
+    deathsAveraging: number, activeWindow: number, viewPort: ViewPort) {
     this.displayName = displayName;
+    this.dataSource = dataSource;
     this.casesAveraging = casesAveraging;
     this.deathsAveraging = deathsAveraging;
     this.activeWindow = activeWindow;
@@ -90,8 +92,12 @@ export class GraphBase {
     }
   }
 
-  public setRawData(rawData: CountryData): void {
-    this.rawData = rawData;
+  public setCountry(country: string): void {
+    const data = this.dataSource.getCountryData(country);
+    if (data) {
+      this.rawData = data;
+      this.calcStats();
+    }
   }
 
   public calcStats(): void {
@@ -127,9 +133,9 @@ export class GraphBase {
   protected setCustomData(stats: stats_t): void {
     this.customData = _.map(stats.rawData.dates, (v, i) => [
       v.format('Do MMMM YYYY'),
-      stats.rawData.deaths[i],
+      stats.rawData.deaths[i].toLocaleString(),
       stats.rawData.cases[i].toLocaleString(),
-      stats.rollingDeaths[i],
+      Math.round(stats.rollingDeaths[i]).toLocaleString(),
       stats.active[i] ? Math.round(stats.active[i]).toLocaleString(): '']);
   }
 
@@ -138,7 +144,7 @@ export class GraphBase {
       this.title = [
         `<b>${this.rawData.displayName} COVID-19 visualization</b>`,
         `${this.customData[0][0]}`,
-        `${this.rawData.deaths[0].toLocaleString()} new deaths, ${this.rawData.cases[0].toLocaleString()} new cases, ${this.rawData.cumDeaths[0].toLocaleString()} total deaths`
+        `${this.rawData.deaths[0].toLocaleString()} new deaths   ${this.rawData.cases[0].toLocaleString()} new cases   ${this.rawData.cumDeaths[0].toLocaleString()} total deaths`
       ].join('<br>');
     }
   }
