@@ -30,7 +30,7 @@
     "RMax":2.25
   },
   "US":{
-    "casesMin":200000,
+    "casesMin":250000,
     "RMax":1.5
   }
 }
