@@ -4,7 +4,9 @@
   "description": "UK COVID-19 Trace",
   "main": "dist/index.html",
   "scripts": {
-    "clean": "rm -rf dist/",
+    "clean": "run-script-os",
+    "clean:darwin:linux": "rm -rf dist/",
+    "clean:win32": "if exist dist rd /s /q dist",
     "build": "npm run clean && npm run load && npx parcel build src/index.html",
     "dev": "npx parcel src/index.html",
     "load": "ts-node load.ts"
@@ -31,6 +33,7 @@
     "jsdom": "^16.4.0",
     "parcel": "^2.0.0-beta.1",
     "parcel-bundler": "^1.12.4",
+    "run-script-os": "^1.1.5",
     "sass": "^1.29.0",
     "ts-node": "^9.1.1",
     "tslib": "^2.1.0",
