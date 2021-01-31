@@ -28,11 +28,10 @@ interface Props {
 
 const App: React.FC<Props> = (props: Props) => {
   const windowSize = useWindowSize();
-  const [hashHistory, push] = useHashHistory();
+  const [hashHistory, push] = useHashHistory(props.defaultCountry, String(0));
   const [loaded, countryList] = useDataSource(props.dataSource, 500);
-  const [countrySelected, setCountrySelected] =
-    React.useState<string>(hashHistory || props.defaultCountry);
-  const [graphIndex, setGraphIndex] = React.useState<number>(0);
+  const [countrySelected, setCountrySelected] = React.useState<string>(hashHistory[0]);
+  const [graphIndex, setGraphIndex] = React.useState<number>(Number(hashHistory[1]));
 
   React.useEffect(() => {
     if (loaded) {
@@ -56,11 +55,17 @@ const App: React.FC<Props> = (props: Props) => {
   }, [loaded, graphIndex]);
 
   // Handle the history and country encoded hash
-  React.useEffect(() => push(countrySelected), [countrySelected]);
+  React.useEffect(() => push(countrySelected, String(graphIndex)),
+    [countrySelected, graphIndex]);
   React.useEffect(() => {
-    if (countryList.indexOf(hashHistory) != -1) {
-      setCountrySelected(hashHistory)
-     }
+    const country = hashHistory[0];
+    const graph = Number(hashHistory[1]);
+    if (countryList.indexOf(country) != -1) {
+      setCountrySelected(country);
+    }
+    if (graph >=0 && graph < props.graphs.length) {
+      setGraphIndex(graph);
+    }
    }, [hashHistory]);
 
   return (
