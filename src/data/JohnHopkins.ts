@@ -25,27 +25,31 @@ export default class JohnHopkins extends DataSourceImpl implements DataSource {
     // Not at all robust method for loading the data. Makes the assumption that
     // both files have the same format, same country order and same date range.
     // TODO improve this
-    const cases = await this.loadFile('time_series_covid19_confirmed_global.csv');
-    const deaths = await this.loadFile('time_series_covid19_deaths_global.csv');
-    this.dates = _.reverse(_.map(_.drop(cases.shift(), 4), d => moment(d, 'M/D/YY')));
-    this.dates.pop();
-    deaths.shift();
-    this.store.clear();
-    _.each(cases, (column, i) => {
-      const key = this.makeKey(column);
-      const cumCases = _.reverse(_.map(_.drop(column, 4), v => Number(v)));
-      const cumDeaths = _.reverse(_.map(_.drop(deaths[i], 4), v => Number(v)));
-      if (cumCases.length == this.dates.length + 1) {
-        this.store.set(key, {
-          displayName: key,
-          dates: this.dates,
-          cases: this.difference(cumCases),
-          deaths: this.difference(cumDeaths),
-          cumCases: cumCases,
-          cumDeaths: cumDeaths
-        });
-      }
-    });
+    try {
+      const cases = await this.loadFile('time_series_covid19_confirmed_global.csv');
+      const deaths = await this.loadFile('time_series_covid19_deaths_global.csv');
+      this.dates = _.reverse(_.map(_.drop(cases.shift(), 4), d => moment(d, 'M/D/YY')));
+      this.dates.pop();
+      deaths.shift();
+      this.store.clear();
+      _.each(cases, (column, i) => {
+        const key = this.makeKey(column);
+        const cumCases = _.reverse(_.map(_.drop(column, 4), v => Number(v)));
+        const cumDeaths = _.reverse(_.map(_.drop(deaths[i], 4), v => Number(v)));
+        if (cumCases.length == this.dates.length + 1) {
+          this.store.set(key, {
+            displayName: key,
+            dates: this.dates,
+            cases: this.difference(cumCases),
+            deaths: this.difference(cumDeaths),
+            cumCases: cumCases,
+            cumDeaths: cumDeaths
+          });
+        }
+      });
+    } catch (err) {
+      console.error("failed to load CSSE data set");
+    }
   }
 
   private async loadFile(fileName: string): Promise<Array<Array<string>>> {
