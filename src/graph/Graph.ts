@@ -133,8 +133,8 @@ export class GraphBase {
   protected setCustomData(stats: stats_t): void {
     this.customData = _.map(stats.rawData.dates, (v, i) => [
       v.format('Do MMMM YYYY'),
-      stats.rawData.deaths[i].toLocaleString(),
-      stats.rawData.cases[i].toLocaleString(),
+      stats.rawData.deaths[i] ? stats.rawData.deaths[i].toLocaleString() : '0',
+      stats.rawData.cases[i] ? stats.rawData.cases[i].toLocaleString() : '0',
       Math.round(stats.rollingDeaths[i]).toLocaleString(),
       stats.active[i] ? Math.round(stats.active[i]).toLocaleString(): '']);
   }
