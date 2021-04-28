@@ -1,4 +1,16 @@
 {
+  "Austria": {
+    "casesMin":300,
+    "RMax":2.0
+  },
+  "Bangladesh": {
+    "casesMin":4000,
+    "RMax":2.0
+  },
+  "Bulgaria": {
+    "casesMin":200,
+    "RMax":3.0
+  },
   "Chile":{
     "casesMin":15000,
     "RMax":2.0
@@ -11,11 +23,23 @@
     "casesMin":4000,
     "RMax":2.0
   },
+  "Israel": {
+    "casesMin":200,
+    "RMax":2.75
+  },
+  "Italy": {
+    "casesMin":2000,
+    "RMax":2.5
+  },
   "Japan":{
-    "casesMin":500
+    "casesMin":300
   },
   "Korea, South":{
     "RMax":3.5
+  },
+  "Poland": {
+    "casesMin":2000,
+    "RMax":2.00
   },
   "Russia":{
     "casesMin":60000,
