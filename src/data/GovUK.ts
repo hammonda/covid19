@@ -46,7 +46,7 @@ export default class GovUK extends DataSourceImpl implements DataSource {
         dataSet.cumDeaths[0] = dataSet.cumDeaths[1];
       }
       const rData = (await axios.get(GovUK.endpointExp +
-        '?areaType=overview&metric=transmissionRateMin&metric=transmissionRateMax&format=json',
+        '?areaType=nation&areaCode=E92000001&metric=transmissionRateMin&metric=transmissionRateMax&format=json',
         { timeout: 2000})).data.body;
       dataSet.rData = {
         displayName: 'GOV.UK R value',
