@@ -23,13 +23,7 @@ export default class Scatter2D extends GraphBase implements Graph {
   constructor(dataSource: DataSource, casesAveraging: number,
     deathsAveraging: number, activeWindow: number, viewPort: ViewPort) {
     super('R₀ vs Active Cases', dataSource, casesAveraging, deathsAveraging, activeWindow, viewPort);
-    this.hoverTemplate = [
-      '<b>%{customdata[0]}</b>',
-      'New deaths: %{customdata[1]}',
-      'New cases: %{customdata[2]}',
-      'Rolling average deaths: %{customdata[3]}',
-      'Active cases: %{customdata[4]}',
-      '<b>R: %{y:.3f}</b><extra></extra>'].join('<br>');
+    this.hoverTemplate = '';
     this.rHoverTemplate = [
       '<b>%{customdata[0]}</b>',
       'Min transmission Rate: %{customdata[1]:.2f}',
@@ -50,6 +44,14 @@ export default class Scatter2D extends GraphBase implements Graph {
     if (!this.stats)
       return;
 
+    this.hoverTemplate = [
+      '<b>%{customdata[0]}</b>',
+      'New deaths: %{customdata[1]}',
+      `New ${this.rawData?.xName||"cases"}: %{customdata[2]}`,
+      'Rolling average deaths: %{customdata[3]}',
+      `${this.rawData?.xSumName||"Active cases"}: %{customdata[4]}`,
+      '<b>R: %{y:.3f}</b><extra></extra>'].join('<br>');
+
     const height = this.height * window.innerHeight;
 
     const casesRange = this.getLogAxisRange(this.stats.activeMin, this.stats.activeMax, 1.5);
@@ -67,7 +69,7 @@ export default class Scatter2D extends GraphBase implements Graph {
       {
         y: this.stats.r,
         x: this.stats.active,
-        name: 'R₀ vs Active cases',
+        name: `R₀ vs ${this.rawData?.xSumName||"Active cases"}`,
         customdata: this.customData,
         type: 'scatter',
         mode: 'lines+markers+text',
@@ -121,7 +123,7 @@ export default class Scatter2D extends GraphBase implements Graph {
       },
       showlegend: true,
       xaxis: {
-        title: `Active cases (${this.activeWindow} day rolling sum of new cases)`,
+        title: `${this.rawData?.xSumName||"Active cases"} (${this.activeWindow} day rolling sum of new ${this.rawData?.xName||"cases"})`,
         showline: true,
         type: 'log',
         range: casesRange,

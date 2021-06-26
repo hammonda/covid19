@@ -25,6 +25,7 @@ export default class GovUK extends DataSourceImpl implements DataSource {
 
   public async load(): Promise<void> {
     const dataSet: any = {};
+    const hdataSet: any = {};
     try {
       const data = (await axios.get(GovUK.endpoint, {
         params: {
@@ -33,7 +34,8 @@ export default class GovUK extends DataSourceImpl implements DataSource {
             dates: 'date',
             cases: 'newCasesByPublishDate',
             deaths: 'newDeaths28DaysByPublishDate',
-            cumDeaths: 'cumDeaths28DaysByPublishDate'
+            cumDeaths: 'cumDeaths28DaysByPublishDate',
+            newAdmissions: 'newAdmissions'
           }
         }
       })).data.data;
@@ -54,11 +56,22 @@ export default class GovUK extends DataSourceImpl implements DataSource {
         rMin: _.map(rData, 'transmissionRateMin'),
         rMax: _.map(rData, 'transmissionRateMax')
       };
+      const hdata = _.filter(data, i => i.newAdmissions != null);
+      hdataSet.displayName = 'United Kingdom (H)';
+      hdataSet.dates = _.map(hdata, i => moment(i.dates, 'YYYY-MM-DD'));
+      hdataSet.cases = _.map(hdata, 'newAdmissions');
+      hdataSet.deaths = _.map(hdata, 'deaths');
+      hdataSet.cumDeaths = _.map(hdata, 'cumDeaths');
+      hdataSet.xName = 'admissions';
+      hdataSet.xSumName = 'Sum of admissions';
     } catch (err) {
       console.error(err);
     } finally {
       if (!_.isEmpty(dataSet)) {
         this.store.set('United Kingdom', dataSet as CountryData);
+      }
+      if (!_.isEmpty(hdataSet)) {
+        this.store.set('United Kingdom (H)', hdataSet as CountryData);
       }
     }
   }

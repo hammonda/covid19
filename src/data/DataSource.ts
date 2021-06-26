@@ -8,6 +8,8 @@ import moment from 'moment';
 
 export type CountryData = {
   readonly displayName: string,
+  readonly xName: string,
+  readonly xSumName: string,
   readonly dates: readonly moment.Moment[],
   readonly cases: readonly number[],
   readonly deaths: readonly number[],

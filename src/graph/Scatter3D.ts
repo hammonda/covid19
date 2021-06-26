@@ -26,18 +26,8 @@ export default class Scatter3D extends GraphBase implements Graph {
     deathsAveraging: number, activeWindow: number, viewPort: ViewPort) {
     super('Deaths vs R₀ and Active Cases', dataSource, casesAveraging,
       deathsAveraging, activeWindow, viewPort);
-    this.hoverTemplate = [
-      '<b>%{customdata[0]}</b>',
-      'New deaths: %{customdata[1]}',
-      'New cases: %{customdata[2]}',
-      'Rolling average deaths: %{customdata[3]}',
-      'Active cases: %{customdata[4]}',
-      '<b>R: %{x:.3f}</b><extra></extra>'].join('<br>');
-    this.projectTemplate = [
-      'Rolling average deaths: %{z:.1f}',
-      'Active cases: %{y}',
-      '<b>R: %{x:.3f}</b><extra></extra>'
-    ].join('<br>');
+    this.hoverTemplate = '';
+    this.projectTemplate = '';
     if (viewPort == ViewPort.xSmall) {
       this.height = 0.75;
       this.margin = {l: 0, r: 0, t: 120, b: 0};
@@ -54,6 +44,19 @@ export default class Scatter3D extends GraphBase implements Graph {
   public render(divId: string): void {
     if (!this.stats)
       return;
+
+    this.hoverTemplate = [
+      '<b>%{customdata[0]}</b>',
+      'New deaths: %{customdata[1]}',
+      `New ${this.rawData?.xName||"cases"}: %{customdata[2]}`,
+      'Rolling average deaths: %{customdata[3]}',
+      `${this.rawData?.xSumName||"Active cases"}: %{customdata[4]}`,
+      '<b>R: %{x:.3f}</b><extra></extra>'].join('<br>');
+    this.projectTemplate = [
+      'Rolling average deaths: %{z:.1f}',
+      `${this.rawData?.xSumName||"Active cases"}: %{y}`,
+      '<b>R: %{x:.3f}</b><extra></extra>'
+    ].join('<br>');
 
     const height = this.height * window.innerHeight;
 
@@ -150,7 +153,7 @@ export default class Scatter3D extends GraphBase implements Graph {
         },
         yaxis: {
           title: {
-            text: 'Active cases',
+            text: `${this.rawData?.xSumName||"Active cases"}`,
             font: {
               size: this.fontSize.axisTitle
             }
