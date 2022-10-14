@@ -39,6 +39,8 @@ export default class GovUK extends DataSourceImpl implements DataSource {
           }
         }
       })).data.data;
+      while (data[0].cumDeaths == null)
+        data.shift();
       dataSet.displayName = 'United Kingdom';
       dataSet.dates = _.map(data, i => moment(i.dates, 'YYYY-MM-DD'));
       dataSet.cases = _.map(data, 'cases');
